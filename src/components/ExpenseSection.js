@@ -8,18 +8,25 @@ const AmountBox = ({ amount, setAmount }) => {
     setAmount(e.target.value)
   }
 
-  return <input value={amount} onChange={handleAmountEntry} />
+  return (
+    <div className="amount-box">
+      <label for="amount">$ </label>
+      <input value={amount} id="amount" onChange={handleAmountEntry} />
+    </div>
+  )
 }
 
 const DescriptionBox = ({ description, setDescription }) => {
   const handleDescriptionEntry = e => setDescription(e.target.value)
 
   return (
-    <input
-      value={description}
-      placeholder="What for?"
-      onChange={handleDescriptionEntry}
-    />
+    <div className="description-box">
+      <input
+        value={description}
+        placeholder="What for?"
+        onChange={handleDescriptionEntry}
+      />
+    </div>
   )
 }
 
@@ -27,7 +34,7 @@ const PayerPanel = ({ names, payer, setPayer }) => {
   const handlePayerSelection = name => setPayer(name)
 
   return (
-    <>
+    <div className="payer-panel">
       <p style={{display: "inline"}}>Payer: </p>
       {names.map((n, i) => (
         <button
@@ -38,7 +45,7 @@ const PayerPanel = ({ names, payer, setPayer }) => {
           {n}
         </button>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -50,8 +57,9 @@ const PayeePanel = ({ names, payees, setPayees }) => {
   }
 
   return (
-    <>
-      <p style={{display: "inline-block"}}>Payees:</p>
+    <div>
+      <p style={{display: "inline-block"}}>Payees:&nbsp;</p>
+      <br/>
       {names.map((n, i) => (
         <div style={{display: "inline"}} key={i}>
           <input
@@ -60,9 +68,10 @@ const PayeePanel = ({ names, payees, setPayees }) => {
             onChange={() => changeCheckStatus(i)}
           />
           <label onClick={() => changeCheckStatus(i)}>{n} </label>
+          &nbsp;&nbsp;
         </div>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -139,6 +148,7 @@ const AmountToPaySection = ({ names, expenses }) => {
     }
   }
 
+  // Record amounts that need to be paid
   const payments = []
   for (let p1 in amountOwedBy) {
     for (let p2 in amountOwedBy[p1]) {
@@ -185,7 +195,7 @@ const ExpenseSection = ({ show, names }) => {
 
   if (!show) {
     return (
-      <div>
+      <div className="expense-section">
         <h3 style={{color: "lightgray"}}>Expenses</h3>
       </div>
     )
@@ -201,9 +211,13 @@ const ExpenseSection = ({ show, names }) => {
     return indivAmounts
   }
 
-  const addExpense = () => { 
+  const addExpense = () => {
+    const convertedAmount = Number(amount)
+  
+    if (convertedAmount <= 0 || isNaN(convertedAmount)) return
+
     const newExpense = {
-      amount: Number(amount),
+      amount: convertedAmount,
       description: description,
       payer: payer,
       payeeNames: names.filter((n, i) => payees[i]),
@@ -217,32 +231,27 @@ const ExpenseSection = ({ show, names }) => {
   }
 
   return (
-    <div>
+    <div className="expense-section">
       <h3>Enter your expenses:</h3>
-      <label>$ </label>
       <AmountBox
         amount={amount}
         setAmount={setAmount}
       />
-      <button onClick={addExpense}>+</button>
-      <br/>
+      <button onClick={addExpense} className="submit-button">🠗</button>
       <DescriptionBox
         description={description}
         setDescription={setDescription}
       />
-      <br/><br/>
       <PayerPanel
         names={names}
         payer={payer}
         setPayer={setPayer}
       />
-      <br/>
       <PayeePanel
         names={names}
         payees={payees}
         setPayees={setPayees}
       />
-      <br/>
       <ExpenseList
         expenses={expenses}
         setExpenses={setExpenses}

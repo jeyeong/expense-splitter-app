@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 const ErrorMessage = ({ message }) => {
   if (message === '') return null
-  return <p style={{color: "red"}}>{message}</p>
+  return <p className="num-people-error">{message}</p>
 }
 
 const NumPeopleInputBox = ({ numOfPeople, setNumOfPeople }) => {
@@ -13,11 +13,14 @@ const NumPeopleInputBox = ({ numOfPeople, setNumOfPeople }) => {
     setNumOfPeople(numEntered)
   }
 
-  // Render a different initial input box
-  if (numOfPeople === 0)
-    return <input value="" placeholder="2" onChange={handleNumOfPeopleEntry} />
-  else
-    return <input value={numOfPeople} onChange={handleNumOfPeopleEntry} />
+  return (
+    <input
+      autoFocus
+      value={numOfPeople === 0 ? "" : numOfPeople}
+      placeholder="2"
+      onChange={handleNumOfPeopleEntry}
+    />
+  )
 }
 
 /**
@@ -27,7 +30,9 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
                             setShowSection }) => {
   const [errorMessage, setErrorMessage] = useState('')
 
-  const handleNext = () => {
+  const handleNext = e => {
+    e.preventDefault()
+
     // If the user didn't key in anything, use the default value of 2
     if (numOfPeople === 0) {
       setNumOfPeople(2)
@@ -40,32 +45,34 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
     // If invalid, display an error message
     else {
       setErrorMessage(
-        `${numOfPeople} is not valid. Please enter a number from 2-20.`
+        `Please enter a number from 2-20.`
       )
-      setTimeout(() => setErrorMessage(''), 5000)
+      setTimeout(() => setErrorMessage(''), 4000)
     }
   }
 
   if (!show) {
     return (
-      <div>
-        <h3 style={{color: "lightgray"}}>How many people?</h3>
+      <div className="num-people-section">
+        <h3 style={{color: "lightgray"}}># of People</h3>
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="num-people-section">
       <h3>How many people?</h3>
       <p>Enter a number from 2 to 20.</p>
       <ErrorMessage
         message={errorMessage}
       />
-      <NumPeopleInputBox
-        numOfPeople={numOfPeople}
-        setNumOfPeople={setNumOfPeople}
-      />
-      <button onClick={handleNext}>Next</button>
+      <form>
+        <NumPeopleInputBox
+          numOfPeople={numOfPeople}
+          setNumOfPeople={setNumOfPeople}
+        />
+        <button onClick={handleNext} type="submit">Next</button>
+      </form>
     </div>
   )
 }
