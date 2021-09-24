@@ -61,6 +61,7 @@ body { font-size: 16px; }
 
 .expense-section h3 { margin-bottom: 1rem; }
 
+/*** amount box ***/
 .amount-box {
   width: 202px;
   height: calc(1.5rem + 2px);
@@ -72,7 +73,7 @@ body { font-size: 16px; }
 
 .amount-box label {
   margin: 0 1% 0 2%;
-  cursor: alias;
+  cursor: text;
 }
 
 .amount-box input {
@@ -88,6 +89,7 @@ body { font-size: 16px; }
   padding-bottom: 1.5px;
 }
 
+/*** description box ***/
 .description-box { margin-bottom: 1rem; }
 
 .description-box input {
@@ -97,4 +99,32 @@ body { font-size: 16px; }
 }
 
 .description-box input::placeholder { opacity: 0.8; }
+
+/*** payer panel ***/
 .payer-panel { margin-bottom: 0.25rem; }
+
+/*** payee panel ***/
+.payees-lte4 { margin-bottom: 1rem; }
+
+.payees-lte4 p {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.payee-element-lte4:first-of-type { margin-left: 0.1rem; }
+
+.payee-element-lte4 {
+  display: inline-block;
+  margin-right: 0.6rem
+}
+
+.payees-gt4 { margin-bottom: 1rem; }
+.payees-gt4 p { margin-bottom: 0; }
+
+.payee-element-gt4 {
+  display: inline-block;
+  margin: 0 0.4rem;
+}
+
+.empty-payee-space-lt10 { width: 35.406px }
+.empty-payee-space-gt10 { width: 44.031px }

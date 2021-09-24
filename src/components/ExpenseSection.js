@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 const AmountBox = ({ amount, setAmount }) => {
   const handleAmountEntry = e => {
@@ -30,16 +32,16 @@ const DescriptionBox = ({ description, setDescription }) => {
   )
 }
 
-const PayerPanel = ({ names, payer, setPayer }) => {
-  const handlePayerSelection = name => setPayer(name)
+const PayerPanel = ({ names, payerIdx, setPayerIdx }) => {
+  const handlePayerSelection = idx => setPayerIdx(idx)
 
   return (
     <div className="payer-panel">
       <p style={{display: "inline"}}>Payer: </p>
       {names.map((n, i) => (
         <button
-          disabled={n === payer}
-          onClick={() => handlePayerSelection(n)}
+          disabled={i === payerIdx}
+          onClick={() => handlePayerSelection(i)}
           key={i}
         >
           {n}
@@ -49,27 +51,88 @@ const PayerPanel = ({ names, payer, setPayer }) => {
   )
 }
 
-const PayeePanel = ({ names, payees, setPayees }) => {
-  const changeCheckStatus = idx => {
+const PayeePanelElement = ({ name, payees, idx, setPayees, eltClass }) => {
+  if (name === null) {
+    if (idx < 10) {
+      return (
+        <div
+          className="payee-element-gt4 empty-payee-space-lt10"
+        />
+      )
+    } else {
+      return (
+        <div
+          className="payee-element-gt4 empty-payee-space-gt10"
+        />
+      )
+    }
+  }
+
+  const changeCheckStatus = () => {
     const newPayees = [...payees]
     newPayees[idx] = !newPayees[idx]
     setPayees(newPayees)
   }
 
   return (
-    <div>
-      <p style={{display: "inline-block"}}>Payees:&nbsp;</p>
-      <br/>
+    <div className={eltClass}>
+      <input
+        type="checkbox"
+        checked={payees[idx]}
+        onChange={changeCheckStatus}
+        name={`payee${idx}`}
+      />
+      <label onClick={changeCheckStatus}>{name}</label>
+    </div>
+  )
+}
+
+const PayeePanel = ({ names, payees, setPayees }) => {
+  if (names.length > 4) {
+    // Group names in sets of five
+    const groupedNames = []
+    names.forEach((n, i) => {
+      if (i % 5 === 0) groupedNames.push([])
+      groupedNames[groupedNames.length - 1].push(n)
+    })
+    for (let i = groupedNames[groupedNames.length - 1].length;
+        i < 5; i++) {
+      groupedNames[groupedNames.length - 1].push(null)
+    }
+
+    return (
+      <div className="payees-gt4">
+        <p>Payees:&nbsp;</p>
+        {groupedNames.map((group, i) => (
+          <div classname="payee-row" key={i}>
+            {group.map((name, j) => (
+              <PayeePanelElement
+                name={name}
+                payees={payees}
+                idx={i*5 + j}
+                setPayees={setPayees}
+                eltClass="payee-element-gt4"
+                key={i*5 + j}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="payees-lte4">
+      <p>Payees:&nbsp;</p>
       {names.map((n, i) => (
-        <div style={{display: "inline"}} key={i}>
-          <input
-            type="checkbox"
-            checked={payees[i]}
-            onChange={() => changeCheckStatus(i)}
-          />
-          <label onClick={() => changeCheckStatus(i)}>{n} </label>
-          &nbsp;&nbsp;
-        </div>
+        <PayeePanelElement
+          name={n}
+          payees={payees}
+          idx={i}
+          setPayees={setPayees}
+          eltClass="payee-element-lte4"
+          key={i}
+        />
       ))}
     </div>
   )
@@ -181,17 +244,13 @@ const AmountToPaySection = ({ names, expenses }) => {
 const ExpenseSection = ({ show, names }) => {
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
-  const [payer, setPayer] = useState('')
+  const [payerIdx, setPayerIdx] = useState(0)
   const [payees, setPayees] = useState([])
   const [expenses, setExpenses] = useState([])
 
-  // To update the payer and payees states after the initial render
+  // To update the payees state after the initial render
   if (payees.length !== names.length)
     setPayees(names.map(n => true))
-
-  useEffect(() => {
-    setPayer(names[0])
-  }, [names])
 
   if (!show) {
     return (
@@ -211,7 +270,9 @@ const ExpenseSection = ({ show, names }) => {
     return indivAmounts
   }
 
-  const addExpense = () => {
+  const addExpense = e => {
+    e.preventDefault()
+
     const convertedAmount = Number(amount)
   
     if (convertedAmount <= 0 || isNaN(convertedAmount)) return
@@ -219,7 +280,7 @@ const ExpenseSection = ({ show, names }) => {
     const newExpense = {
       amount: convertedAmount,
       description: description,
-      payer: payer,
+      payer: names[payerIdx],
       payeeNames: names.filter((n, i) => payees[i]),
       payeeAmounts: calculateAmountOwedToPayer(),
     }
@@ -233,34 +294,43 @@ const ExpenseSection = ({ show, names }) => {
   return (
     <div className="expense-section">
       <h3>Enter your expenses:</h3>
-      <AmountBox
-        amount={amount}
-        setAmount={setAmount}
-      />
-      <button onClick={addExpense} className="submit-button">🠗</button>
-      <DescriptionBox
-        description={description}
-        setDescription={setDescription}
-      />
-      <PayerPanel
-        names={names}
-        payer={payer}
-        setPayer={setPayer}
-      />
-      <PayeePanel
-        names={names}
-        payees={payees}
-        setPayees={setPayees}
-      />
-      <ExpenseList
-        expenses={expenses}
-        setExpenses={setExpenses}
-      />
-      <br/>
-      <AmountToPaySection
-        names={names}
-        expenses={expenses}
-      />
+      <form>
+        <AmountBox
+          amount={amount}
+          setAmount={setAmount}
+        />
+        <button onClick={addExpense} className="submit-button" type="submit">
+          🠗
+        </button>
+        <DescriptionBox
+          description={description}
+          setDescription={setDescription}
+        />
+        <PayerPanel
+          names={names}
+          payerIdx={payerIdx}
+          setPayerIdx={setPayerIdx}
+        />
+        <PayeePanel
+          names={names}
+          payees={payees}
+          setPayees={setPayees}
+        />
+      </form>
+      <Row>
+        <Col>
+          <ExpenseList
+            expenses={expenses}
+            setExpenses={setExpenses}
+          />
+        </Col>
+        <Col>
+          <AmountToPaySection
+            names={names}
+            expenses={expenses}
+          />
+        </Col>
+      </Row>
     </div>
   )
 }
