@@ -18,7 +18,7 @@ const WebsiteHeader = () => {
             <a href="#">
               <img
                 src={logo}
-                alt="Logo"
+                alt="logo"
                 className="logo"
               />
             </a>

@@ -45,7 +45,35 @@ body { font-size: 16px; }
   margin-top: -0.5rem;
 }
 
+.num-people-section form {
+  display: flex;
+  justify-content: center;
+}
+
+.num-people-section button {
+  font-size: 0.95rem;
+  transition: background 0.1s, color 0.1s;
+}
+
+.num-people-section button:hover {
+  background: #e74c3c;
+  color: white;
+  opacity: 0.9;
+}
+
 /* ---- Name Section ---- */
+
+.name-section button {
+  font-size: 0.98rem;
+  border-radius: 0.1rem;
+  transition: background 0.1s, color 0.1s;
+}
+
+.name-section button:hover {
+  background: #e74c3c;
+  color: white;
+  opacity: 0.9;
+}
 
 .name-group { margin-bottom: 0.5rem; }
 .name-group:last-of-type { margin-bottom: 1rem; }
@@ -60,6 +88,7 @@ body { font-size: 16px; }
 /* ---- Expense Section ---- */
 
 .expense-section h3 { margin-bottom: 1rem; }
+.expense-form { margin-bottom: 1.75rem; }
 
 /*** amount box ***/
 .amount-box {
@@ -78,6 +107,7 @@ body { font-size: 16px; }
 
 .amount-box input {
   height: 100%;
+  width: 92%;
   border: 1px solid transparent;
 }
 
@@ -87,6 +117,14 @@ body { font-size: 16px; }
   width: 1.6rem;
   padding-top: 0.5px;
   padding-bottom: 1.5px;
+  border-radius: 0 0.25rem 0.25rem 0;
+  transition: background 0.1s, color 0.1s;
+}
+
+.submit-button:hover {
+  background: #e74c3c;
+  color: white;
+  opacity: 0.9;
 }
 
 /*** description box ***/
@@ -95,17 +133,95 @@ body { font-size: 16px; }
 .description-box input {
   width: 208px;
   padding-left: 4px;
-  margin-right: 1.6rem;
+  margin-left: 5px;
 }
 
 .description-box input::placeholder { opacity: 0.8; }
 
+/*** uneven splitting ***/
+.uneven-tooltip button {
+  border-radius: 0 0.1rem 0.1rem 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.uneven-tooltip:hover button {
+  background: #e74c3c;
+  color: white;
+}
+
+.uneven-button { opacity: 0.85; }
+
+/*** uneven splitting - tooltip ***/
+.uneven-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.uneven-tooltip .tooltiptext {
+  visibility: hidden;
+  width: 110px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-top: 0.08rem;
+
+  /* position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  top: -2.5px;
+  left: 125%;
+
+  /* fade in */
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+/* tooltip arrow */
+.uneven-tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 35%;
+  left: -5px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
+}
+
+/* show the tooltip text when you mouse over the tooltip container */
+.uneven-tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
 /*** payer panel ***/
-.payer-panel { margin-bottom: 0.25rem; }
+.payer-panel { margin-bottom: 0.5rem; }
+
+.payer-panel button {
+  border: 3px solid transparent;
+  border-radius: 0.25rem;
+  padding: 0 5px 1px 5px;
+  background: none;
+  transition: border 0.05s;
+}
+
+.payer-panel button:hover {
+  border: 3px solid rgba(231, 76, 60, 0.25);
+  padding: 0 5px 1px 5px;
+  background: none;
+}
+
+.payer-panel button:disabled {
+  border-width: 3px;
+  border-color: rgba(231, 76, 60, 0.95) rgba(219, 68, 53, 0.95)
+    rgba(219, 68, 53, 0.95) rgba(231, 76, 60, 0.95);
+  color: inherit;
+}
 
 /*** payee panel ***/
-.payees-lte4 { margin-bottom: 1rem; }
-
 .payees-lte4 p {
   display: inline-block;
   margin-bottom: 0;
@@ -118,7 +234,9 @@ body { font-size: 16px; }
   margin-right: 0.6rem
 }
 
-.payees-gt4 { margin-bottom: 1rem; }
+.payee-checkbox:checked { background-color: green; }
+.payee-checkbox:checked:before { background-color: green; }
+
 .payees-gt4 p { margin-bottom: 0; }
 
 .payee-element-gt4 {
@@ -126,5 +244,46 @@ body { font-size: 16px; }
   margin: 0 0.4rem;
 }
 
-.empty-payee-space-lt10 { width: 35.406px }
-.empty-payee-space-gt10 { width: 44.031px }
+.empty-payee-space-lt10 { width: 35.41px }
+.empty-payee-space-gt10 { width: 44.03px }
+
+/*** calculation section ***/
+.expenses-entered-section, .payment-amount-section { padding: 0 2rem; }
+
+.expenses-entered-section > div,
+.payment-amount-section > div {
+  border: 1px solid black;
+  padding: 0 1rem;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.55rem 0 0.8rem 0;
+}
+
+.delete-button {
+  padding: 1px;
+  margin-left: 0.35rem;
+  margin-top: 0.1rem;
+  border-radius: 0.1rem;
+}
+
+.delete-button:hover { background: #dcdcdc; }
+
+.delete-button img {
+  display: block;
+  width: 1rem;
+}
+
+.payment-item { margin: 0.55rem 0 0.6rem 0; }
+.filler { margin-bottom: 16px; }
+
+/* ---- Queries ---- */
+
+@media only screen and (max-width: 991px) {
+  .expense-form { margin-bottom: 1.25rem; }
+  .expenses-entered-section { margin-bottom: 1.2rem; }
+  .expenses-entered-section, .payment-amount-section { padding: 0 0.75rem; }
+}

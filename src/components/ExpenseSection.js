@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import deleteImg from '../images/delete.svg'
 
 const AmountBox = ({ amount, setAmount }) => {
   const handleAmountEntry = e => {
@@ -28,6 +29,12 @@ const DescriptionBox = ({ description, setDescription }) => {
         placeholder="What for?"
         onChange={handleDescriptionEntry}
       />
+      <div className="uneven-tooltip">
+        <button className="uneven-button">
+          ⅗
+        </button>
+        <span className="tooltiptext">Uneven split</span>
+      </div>
     </div>
   )
 }
@@ -37,7 +44,7 @@ const PayerPanel = ({ names, payerIdx, setPayerIdx }) => {
 
   return (
     <div className="payer-panel">
-      <p style={{display: "inline"}}>Payer: </p>
+      <p style={{display: "inline"}}>Payer:&thinsp;</p>
       {names.map((n, i) => (
         <button
           disabled={i === payerIdx}
@@ -78,9 +85,9 @@ const PayeePanelElement = ({ name, payees, idx, setPayees, eltClass }) => {
     <div className={eltClass}>
       <input
         type="checkbox"
+        className="payee-checkbox"
         checked={payees[idx]}
         onChange={changeCheckStatus}
-        name={`payee${idx}`}
       />
       <label onClick={changeCheckStatus}>{name}</label>
     </div>
@@ -144,20 +151,30 @@ const ExpenseList = ({ expenses, setExpenses }) => {
     setExpenses(newExpenses)
   }
 
+  const formatExpenseStr = e => {
+    return (
+      `${e.payer} paid $${e.amount.toFixed(2)}` +
+      `${e.description !== '' ? ` for ${e.description}` : ``}` +
+      `: ${e.payeeNames.join(', ')}`
+    ) 
+  }
+
   return (
     <>
       <p><strong>Expenses entered</strong></p>
-      <div style={{border: "1px solid black"}}>
-        <ul>
-          {expenses.map((e, i) => (
-            <li key={i}>
-              {e.payer} paid ${e.amount.toFixed(2)}
-              {e.description !== '' ? ` for ${e.description}` : ``}
-              : {e.payeeNames.join(', ')}&nbsp;
-              <button onClick={() => deleteExpense(e)}>𝘅</button>
-            </li>
-          ))}
-        </ul>
+      <div>
+        {expenses.length === 0 ? <div className="filler" /> : null}
+        {expenses.map((e, i) => (
+          <p className="expense-item" key={i}>
+            {formatExpenseStr(e)}
+            <button className="delete-button" onClick={() => deleteExpense(e)}>
+              <img
+                src={deleteImg}
+                alt="delete"
+              />
+            </button>
+          </p>
+        ))}
       </div>
     </>
   )
@@ -228,14 +245,13 @@ const AmountToPaySection = ({ names, expenses }) => {
   return (
     <>
       <p><strong>How much to pay</strong></p>
-      <div style={{border: "1px solid black"}}>
-        <ul>
-          {payments.map((p, i) => (
-            <li key={i}>
-              {p.debtor} → {p.debtee}: ${p.amount.toFixed(2)}
-            </li>
-          ))}
-        </ul>
+      <div>
+        {payments.length === 0 ? <div className="filler" /> : null}
+        {payments.map((p, i) => (
+          <p className="payment-item" key={i}>
+            {p.debtor} → {p.debtee}: ${p.amount.toFixed(2)}
+          </p>
+        ))}
       </div>
     </>
   )
@@ -294,7 +310,7 @@ const ExpenseSection = ({ show, names }) => {
   return (
     <div className="expense-section">
       <h3>Enter your expenses:</h3>
-      <form>
+      <form className="expense-form">
         <AmountBox
           amount={amount}
           setAmount={setAmount}
@@ -317,14 +333,14 @@ const ExpenseSection = ({ show, names }) => {
           setPayees={setPayees}
         />
       </form>
-      <Row>
-        <Col>
+      <Row className="calc-section" xs={1} lg={2}>
+        <Col className="expenses-entered-section">
           <ExpenseList
             expenses={expenses}
             setExpenses={setExpenses}
           />
         </Col>
-        <Col>
+        <Col className="payment-amount-section">
           <AmountToPaySection
             names={names}
             expenses={expenses}
