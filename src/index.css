@@ -4,8 +4,12 @@ body { font-size: 16px; }
 
 .website-header {
   background-color: #e74c3c;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   height: 6rem;
   color: white;
 }
@@ -20,6 +24,8 @@ body { font-size: 16px; }
   border-bottom: 1px solid transparent;
   color: white;
   text-decoration: none;
+  -webkit-transition: border-bottom 0.25s;
+  -o-transition: border-bottom 0.25s;
   transition: border-bottom 0.25s;
 }
 
@@ -46,26 +52,38 @@ body { font-size: 16px; }
 }
 
 .num-people-section form {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .num-people-section button {
+  border-color: #767676 #212121 #212121 #767676;
   font-size: 0.95rem;
+  -webkit-transition: background 0.1s, color 0.1s;
+  -o-transition: background 0.1s, color 0.1s;
   transition: background 0.1s, color 0.1s;
 }
 
-.num-people-section button:hover {
+.num-people-section button:hover, .num-people-section button:focus {
   background: #e74c3c;
   color: white;
   opacity: 0.9;
 }
 
+.num-people-section button:focus { outline: none; }
+
 /* ---- Name Section ---- */
 
 .name-section button {
+  border-color: #767676 #212121 #212121 #767676;
   font-size: 0.98rem;
   border-radius: 0.1rem;
+  -webkit-transition: background 0.1s, color 0.1s;
+  -o-transition: background 0.1s, color 0.1s;
   transition: background 0.1s, color 0.1s;
 }
 
@@ -92,10 +110,13 @@ body { font-size: 16px; }
 
 /*** amount box ***/
 .amount-box {
+  display: flex;
+  justify-content: center;
   width: 202px;
   height: calc(1.5rem + 2px);
   display: inline-block;
-  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
   border: 1px solid black;
   padding: 0.5px 2px 1.5px 2px;
 }
@@ -115,20 +136,29 @@ body { font-size: 16px; }
 
 .submit-button {
   width: 1.6rem;
+  border-color: #767676 #212121 #212121 #767676;
   padding-top: 0.5px;
   padding-bottom: 1.5px;
   border-radius: 0 0.25rem 0.25rem 0;
+  -webkit-transition: background 0.1s, color 0.1s;
+  -o-transition: background 0.1s, color 0.1s;
   transition: background 0.1s, color 0.1s;
 }
 
-.submit-button:hover {
+.submit-button:hover, .submit-button:focus {
   background: #e74c3c;
   color: white;
   opacity: 0.9;
 }
 
+.submit-button:focus { outline: none; }
+
 /*** description box ***/
-.description-box { margin-bottom: 1rem; }
+.description-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
 
 .description-box input {
   width: 208px;
@@ -136,20 +166,30 @@ body { font-size: 16px; }
   margin-left: 5px;
 }
 
+.description-box input::-webkit-input-placeholder { opacity: 0.8; }
+.description-box input::-moz-placeholder { opacity: 0.8; }
+.description-box input:-ms-input-placeholder { opacity: 0.8; }
+.description-box input::-ms-input-placeholder { opacity: 0.8; }
 .description-box input::placeholder { opacity: 0.8; }
 
 /*** uneven splitting ***/
 .uneven-tooltip button {
+  width: 30.656px;
+  border-color: #767676 #212121 #212121 #767676;
   border-radius: 0 0.1rem 0.1rem 0;
+  -webkit-transition: background 0.15s, color 0.15s;
+  -o-transition: background 0.15s, color 0.15s;
   transition: background 0.15s, color 0.15s;
 }
 
-.uneven-tooltip:hover button {
+.uneven-button { opacity: 0.85; }
+
+.uneven-tooltip:hover button, .uneven-button:focus {
   background: #e74c3c;
   color: white;
 }
 
-.uneven-button { opacity: 0.85; }
+.uneven-button:focus { outline: none; }
 
 /*** uneven splitting - tooltip ***/
 .uneven-tooltip {
@@ -176,6 +216,8 @@ body { font-size: 16px; }
 
   /* fade in */
   opacity: 0;
+  -webkit-transition: opacity 0.1s;
+  -o-transition: opacity 0.1s;
   transition: opacity 0.1s;
 }
 
@@ -184,7 +226,7 @@ body { font-size: 16px; }
   content: "";
   position: absolute;
   top: 35%;
-  left: -5px;
+  left: -4%;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
@@ -203,14 +245,15 @@ body { font-size: 16px; }
 .payer-panel button {
   border: 3px solid transparent;
   border-radius: 0.25rem;
-  padding: 0 5px 1px 5px;
+  padding: 0 4.5px 1px 4.5px;
   background: none;
-  transition: border 0.05s;
+  -webkit-transition-duration: 0.05s;
+       -o-transition-duration: 0.05s;
+          transition-duration: 0.05s;
 }
 
 .payer-panel button:hover {
   border: 3px solid rgba(231, 76, 60, 0.25);
-  padding: 0 5px 1px 5px;
   background: none;
 }
 
@@ -222,28 +265,18 @@ body { font-size: 16px; }
 }
 
 /*** payee panel ***/
-.payees-lte4 p {
-  display: inline-block;
-  margin-bottom: 0;
+.payees-lte4 p, .payees-gt4 p { margin-bottom: 0; }
+.payees-lte4 p { display: inline; }
+
+.payee-checkbox {
+  -webkit-filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
+          filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
 }
 
 .payee-element-lte4:first-of-type { margin-left: 0.1rem; }
-
-.payee-element-lte4 {
-  display: inline-block;
-  margin-right: 0.6rem
-}
-
-.payee-checkbox:checked { background-color: green; }
-.payee-checkbox:checked:before { background-color: green; }
-
-.payees-gt4 p { margin-bottom: 0; }
-
-.payee-element-gt4 {
-  display: inline-block;
-  margin: 0 0.4rem;
-}
-
+.payee-element-lte4, .payee-element-gt4 { display: inline-block; }
+.payee-element-lte4 { margin-right: 0.6rem; }
+.payee-element-gt4 { margin: 0 0.4rem; }
 .empty-payee-space-lt10 { width: 35.41px }
 .empty-payee-space-gt10 { width: 44.03px }
 
@@ -257,13 +290,20 @@ body { font-size: 16px; }
 }
 
 .expense-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   margin: 0.55rem 0 0.8rem 0;
 }
 
 .delete-button {
+  border-color: #767676 #212121 #212121 #767676;
   padding: 1px;
   margin-left: 0.35rem;
   margin-top: 0.1rem;

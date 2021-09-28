@@ -89,6 +89,7 @@ const PayeePanelElement = ({ name, payees, idx, setPayees, eltClass }) => {
         checked={payees[idx]}
         onChange={changeCheckStatus}
       />
+      <span />
       <label onClick={changeCheckStatus}>{name}</label>
     </div>
   )
