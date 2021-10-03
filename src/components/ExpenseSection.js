@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import NumPeopleSection from './NumPeopleSection'
+import UnevenConsole from './UnevenConsole'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import deleteImg from '../images/delete.svg'
@@ -13,14 +15,20 @@ const AmountBox = ({ amount, setAmount }) => {
 
   return (
     <div className="amount-box">
-      <label for="amount">$ </label>
+      <label htmlFor="amount">$ </label>
       <input value={amount} id="amount" onChange={handleAmountEntry} />
     </div>
   )
 }
 
-const DescriptionBox = ({ description, setDescription }) => {
+const DescriptionBox = ({ description, setDescription,
+                          doUneven, setDoUneven }) => {
   const handleDescriptionEntry = e => setDescription(e.target.value)
+
+  const handleUnevenToggler = e => {
+    e.preventDefault()
+    setDoUneven(!doUneven)
+  }
 
   return (
     <div className="description-box">
@@ -29,8 +37,8 @@ const DescriptionBox = ({ description, setDescription }) => {
         placeholder="What for?"
         onChange={handleDescriptionEntry}
       />
-      <div className="uneven-tooltip">
-        <button className="uneven-button">
+      <div className="uneven-tooltip" onClick={handleUnevenToggler}>
+        <button className={doUneven ? "uneven-button-enabled" : "uneven-button"}>
           ⅗
         </button>
         <span className="tooltiptext">Uneven split</span>
@@ -40,15 +48,18 @@ const DescriptionBox = ({ description, setDescription }) => {
 }
 
 const PayerPanel = ({ names, payerIdx, setPayerIdx }) => {
-  const handlePayerSelection = idx => setPayerIdx(idx)
+  const handlePayerSelection = (e, idx) => {
+    e.preventDefault()
+    setPayerIdx(idx)
+  }
 
   return (
     <div className="payer-panel">
-      <p style={{display: "inline"}}>Payer:&thinsp;</p>
+      <p>Who paid?</p>
       {names.map((n, i) => (
         <button
           disabled={i === payerIdx}
-          onClick={() => handlePayerSelection(i)}
+          onClick={e => handlePayerSelection(e, i)}
           key={i}
         >
           {n}
@@ -60,17 +71,14 @@ const PayerPanel = ({ names, payerIdx, setPayerIdx }) => {
 
 const PayeePanelElement = ({ name, payees, idx, setPayees, eltClass }) => {
   if (name === null) {
+    // For CSS styling purposes
     if (idx < 10) {
       return (
-        <div
-          className="payee-element-gt4 empty-payee-space-lt10"
-        />
+        <div className="payee-element-gt4 empty-payee-space-lt10" />
       )
     } else {
       return (
-        <div
-          className="payee-element-gt4 empty-payee-space-gt10"
-        />
+        <div className="payee-element-gt4 empty-payee-space-gt10" />
       )
     }
   }
@@ -89,13 +97,26 @@ const PayeePanelElement = ({ name, payees, idx, setPayees, eltClass }) => {
         checked={payees[idx]}
         onChange={changeCheckStatus}
       />
-      <span />
       <label onClick={changeCheckStatus}>{name}</label>
     </div>
   )
 }
 
-const PayeePanel = ({ names, payees, setPayees }) => {
+const PayeePanel = ({ names, payees, setPayees, doUneven, amount,
+                      unevenSplitAmounts, setUnevenSplitAmounts }) => {
+  if (doUneven) {
+    return (
+      <UnevenConsole
+        names={names}
+        amount={amount}
+        payees={payees}
+        setPayees={setPayees}
+        unevenSplitAmounts={unevenSplitAmounts}
+        setUnevenSplitAmounts={setUnevenSplitAmounts}
+      />
+    )
+  }
+
   if (names.length > 4) {
     // Group names in sets of five
     const groupedNames = []
@@ -110,9 +131,9 @@ const PayeePanel = ({ names, payees, setPayees }) => {
 
     return (
       <div className="payees-gt4">
-        <p>Payees:&nbsp;</p>
+        <p>Who's involved?&thinsp;</p>
         {groupedNames.map((group, i) => (
-          <div classname="payee-row" key={i}>
+          <div className="payee-row" key={i}>
             {group.map((name, j) => (
               <PayeePanelElement
                 name={name}
@@ -131,18 +152,66 @@ const PayeePanel = ({ names, payees, setPayees }) => {
 
   return (
     <div className="payees-lte4">
-      <p>Payees:&nbsp;</p>
-      {names.map((n, i) => (
-        <PayeePanelElement
-          name={n}
-          payees={payees}
-          idx={i}
-          setPayees={setPayees}
-          eltClass="payee-element-lte4"
-          key={i}
-        />
-      ))}
+      <p>Who's involved?&thinsp;</p>
+      <div className="payee-row">
+        {names.map((n, i) => (
+          <PayeePanelElement
+            name={n}
+            payees={payees}
+            idx={i}
+            setPayees={setPayees}
+            eltClass="payee-element-lte4"
+            key={i}
+          />
+        ))}
+      </div>
     </div>
+  )
+}
+
+const ExpenseListItem = ({ expense, deleteExpense }) => {
+  // State that controls the expand button (uneven only)
+  const [expandUneven, setExpandUneven] = useState(false)
+
+  const changeExpandStatus = () => setExpandUneven(!expandUneven)
+
+  const formatExpenseStr = () => {
+    const formatPayeeNames = () => {
+      if (expense.isUneven && expandUneven) {
+        let retStr = ""
+        expense.payeeNames.forEach((n, i) => {
+          retStr = retStr + `${n} ($${expense.payeeAmounts[n].toFixed(2)})`
+          if (i !== expense.payeeNames.length - 1)
+            retStr = retStr + ", "
+        })
+        return retStr
+      }
+      return expense.payeeNames.join(', ')
+    }
+
+    return (
+      `${expense.payer} paid $${expense.amount}` +
+      `${expense.description !== '' ? ` for ${expense.description}` : ``}` +
+      `: ${formatPayeeNames()}`
+    ) 
+  }
+
+  return (
+    <p className="expense-item">
+      {formatExpenseStr()}
+      {expense.isUneven
+        ? <button className="expand-button" onClick={changeExpandStatus}>
+            {expandUneven ? "<" : "..."}
+          </button>
+        : null
+      }
+      <button className="delete-button" onClick={() => deleteExpense(expense)}>
+        <img
+          src={deleteImg}
+          alt="delete"
+        />
+      </button>
+    </p>
   )
 }
 
@@ -152,29 +221,17 @@ const ExpenseList = ({ expenses, setExpenses }) => {
     setExpenses(newExpenses)
   }
 
-  const formatExpenseStr = e => {
-    return (
-      `${e.payer} paid $${e.amount.toFixed(2)}` +
-      `${e.description !== '' ? ` for ${e.description}` : ``}` +
-      `: ${e.payeeNames.join(', ')}`
-    ) 
-  }
-
   return (
     <>
       <p><strong>Expenses entered</strong></p>
       <div>
         {expenses.length === 0 ? <div className="filler" /> : null}
         {expenses.map((e, i) => (
-          <p className="expense-item" key={i}>
-            {formatExpenseStr(e)}
-            <button className="delete-button" onClick={() => deleteExpense(e)}>
-              <img
-                src={deleteImg}
-                alt="delete"
-              />
-            </button>
-          </p>
+          <ExpenseListItem
+            expense={e}
+            deleteExpense={deleteExpense}
+            key={i}
+          />
         ))}
       </div>
     </>
@@ -250,7 +307,7 @@ const AmountToPaySection = ({ names, expenses }) => {
         {payments.length === 0 ? <div className="filler" /> : null}
         {payments.map((p, i) => (
           <p className="payment-item" key={i}>
-            {p.debtor} → {p.debtee}: ${p.amount.toFixed(2)}
+            {p.debtor} 🠖 {p.debtee}: ${p.amount.toFixed(2)}
           </p>
         ))}
       </div>
@@ -261,13 +318,18 @@ const AmountToPaySection = ({ names, expenses }) => {
 const ExpenseSection = ({ show, names }) => {
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
+  const [doUneven, setDoUneven] = useState(false)
   const [payerIdx, setPayerIdx] = useState(0)
   const [payees, setPayees] = useState([])
+  const [unevenSplitAmounts, setUnevenSplitAmounts] = useState([])
+  const [errorMessage, setErrorMessage] = useState('')
   const [expenses, setExpenses] = useState([])
 
-  // To update the payees state after the initial render
-  if (payees.length !== names.length)
+  // To update the payees and uneven split states after the initial render
+  if (payees.length !== names.length) {
     setPayees(names.map(n => true))
+    setUnevenSplitAmounts(names.map(n => ''))
+  }
 
   if (!show) {
     return (
@@ -277,7 +339,13 @@ const ExpenseSection = ({ show, names }) => {
     )
   }
 
-  const calculateAmountOwedToPayer = () => {
+  const setErrorMsgWithTimer = (message, time) => {
+    setErrorMessage(message)
+    setTimeout(() => setErrorMessage(''), time)
+  } 
+
+  // Calculate the individual amounts owed for even splitting
+  const calculateEvenSplit = () => {
     const numOfPayees = payees.reduce((s, p) => s + p, 0)
     const indivAmounts = {}
     names.forEach((n, i) => {
@@ -287,25 +355,79 @@ const ExpenseSection = ({ show, names }) => {
     return indivAmounts
   }
 
+  // Set the individual amounts owed for uneven splitting
+  const handleUnevenSplit = (roundedTarget) => {
+    // Compute the sum of individual amounts
+    const total = unevenSplitAmounts.reduce((sum, amount, i) => {
+      if (payees[i]) return (sum + Number(amount))
+      return sum
+    }, 0)
+
+    // Check if that sum matches the target total
+    if (total != roundedTarget) {
+      setErrorMsgWithTimer(
+        `Sum of individual amounts ($${total.toFixed(2)}) does not match ` +
+        `the expense total ($${roundedTarget.toFixed(2)}).`, 5000
+      )
+      return false
+    }
+
+    // Set the amount owed by each person
+    const indivAmounts = {}
+    names.forEach((n, i) => {
+      if (payees[i]) indivAmounts[n] = Number(unevenSplitAmounts[i])
+      else indivAmounts[n] = 0
+    })
+    return indivAmounts
+  }
+
   const addExpense = e => {
     e.preventDefault()
 
     const convertedAmount = Number(amount)
-  
-    if (convertedAmount <= 0 || isNaN(convertedAmount)) return
 
-    const newExpense = {
-      amount: convertedAmount,
-      description: description,
-      payer: names[payerIdx],
-      payeeNames: names.filter((n, i) => payees[i]),
-      payeeAmounts: calculateAmountOwedToPayer(),
+    // Check amount entered
+    if (convertedAmount <= 0 || isNaN(convertedAmount)) {
+      setErrorMsgWithTimer("Please enter a valid amount.", 4000)
+      return
     }
 
+    // Check that at least one payee is selected
+    if (payees.find(p => p) === undefined) {
+      setErrorMsgWithTimer("Please select at least one payee.", 5000)
+      return
+    }
+
+    // Round up, to 2 decimal places
+    const roundedAmount = (Math.ceil(convertedAmount * 100) / 100).toFixed(2)
+
+    const newExpense = {
+      isUneven: doUneven,
+      amount: roundedAmount,
+      description: description,
+      payer: names[payerIdx],
+      payeeNames: names.filter((n, i) => (
+        payees[i] &&
+        // Nonzero amount if we are doing uneven splitting
+        ((!doUneven) || Number(unevenSplitAmounts[i]) > 0)
+      )),
+    }
+
+    // Calculate the amount owed by each person
+    if (!doUneven) newExpense['payeeAmounts'] = calculateEvenSplit()
+    else {
+      const payeeAmounts = handleUnevenSplit(Number(roundedAmount))
+      if (payeeAmounts === false) return
+      newExpense['payeeAmounts'] = payeeAmounts
+    }
+
+    // Add the expense to the list of expenses
     setExpenses(expenses.concat(newExpense))
 
+    // Reset all fields
     setAmount('')
     setDescription('')
+    setUnevenSplitAmounts(unevenSplitAmounts.map(e => ''))
   }
 
   return (
@@ -322,6 +444,12 @@ const ExpenseSection = ({ show, names }) => {
         <DescriptionBox
           description={description}
           setDescription={setDescription}
+          doUneven={doUneven}
+          setDoUneven={setDoUneven}
+        />
+        <NumPeopleSection.ErrorMessage
+          message={errorMessage}
+          nameOfClass="expense-form-error"
         />
         <PayerPanel
           names={names}
@@ -332,6 +460,10 @@ const ExpenseSection = ({ show, names }) => {
           names={names}
           payees={payees}
           setPayees={setPayees}
+          doUneven={doUneven}
+          amount={amount}
+          unevenSplitAmounts={unevenSplitAmounts}
+          setUnevenSplitAmounts={setUnevenSplitAmounts}
         />
       </form>
       <Row className="calc-section" xs={1} lg={2}>

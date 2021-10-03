@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const ErrorMessage = ({ message }) => {
+const ErrorMessage = ({ message, nameOfClass }) => {
   if (message === '') return null
-  return <p className="num-people-error">{message}</p>
+  return <p className={nameOfClass}>{message}</p>
 }
 
 const NumPeopleInputBox = ({ numOfPeople, setNumOfPeople }) => {
@@ -65,6 +65,7 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
       <p>Enter a number from 2 to 20.</p>
       <ErrorMessage
         message={errorMessage}
+        nameOfClass="num-people-error"
       />
       <form>
         <NumPeopleInputBox
@@ -77,4 +78,6 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
   )
 }
 
-export default NumPeopleSection
+const exportObject = { NumPeopleSection, ErrorMessage }
+
+export default exportObject

@@ -42,9 +42,11 @@ body { font-size: 16px; }
 
 .main h1 { font-size: 2.35rem; }
 .main h3 { font-size: 1.5rem; }
-.num-people-section, .name-section, .expense-section { margin-top: 2rem; }
+.num-people-section , .name-section, .expense-section { margin-top: 2.25rem; }
 
 /* ---- Num People Section ---- */
+
+.num-people-section p { margin-bottom: 0.9rem; }
 
 .num-people-error {
   color: red;
@@ -68,13 +70,11 @@ body { font-size: 16px; }
   transition: background 0.1s, color 0.1s;
 }
 
-.num-people-section button:hover, .num-people-section button:focus {
+.num-people-section button:hover {
   background: #e74c3c;
   color: white;
   opacity: 0.9;
 }
-
-.num-people-section button:focus { outline: none; }
 
 /* ---- Name Section ---- */
 
@@ -110,8 +110,12 @@ body { font-size: 16px; }
 
 /*** amount box ***/
 .amount-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 202px;
   height: calc(1.5rem + 2px);
   display: inline-block;
@@ -145,19 +149,21 @@ body { font-size: 16px; }
   transition: background 0.1s, color 0.1s;
 }
 
-.submit-button:hover, .submit-button:focus {
+.submit-button:hover {
   background: #e74c3c;
   color: white;
   opacity: 0.9;
 }
 
-.submit-button:focus { outline: none; }
-
 /*** description box ***/
 .description-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-bottom: 0.75rem;
 }
 
 .description-box input {
@@ -172,8 +178,14 @@ body { font-size: 16px; }
 .description-box input::-ms-input-placeholder { opacity: 0.8; }
 .description-box input::placeholder { opacity: 0.8; }
 
+/*** expense form error message ***/
+.expense-form-error {
+  color: red;
+  margin: -0.25rem 0 0.65rem 0.25rem;
+}
+
 /*** uneven splitting ***/
-.uneven-tooltip button {
+.uneven-button, .uneven-button-enabled {
   width: 30.656px;
   border-color: #767676 #212121 #212121 #767676;
   border-radius: 0 0.1rem 0.1rem 0;
@@ -183,13 +195,14 @@ body { font-size: 16px; }
 }
 
 .uneven-button { opacity: 0.85; }
+.uneven-button-enabled { opacity: 0.9; }
 
-.uneven-tooltip:hover button, .uneven-button:focus {
+.uneven-tooltip:hover .uneven-button, .uneven-button-enabled {
   background: #e74c3c;
   color: white;
 }
 
-.uneven-button:focus { outline: none; }
+.uneven-button-enabled:hover { background-color: #de4839; }
 
 /*** uneven splitting - tooltip ***/
 .uneven-tooltip {
@@ -240,7 +253,13 @@ body { font-size: 16px; }
 }
 
 /*** payer panel ***/
-.payer-panel { margin-bottom: 0.5rem; }
+.payer-panel {
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-bottom: 0.6rem;
+}
+
+.payer-panel p { margin-bottom: 0.15rem; }
 
 .payer-panel button {
   border: 3px solid transparent;
@@ -265,8 +284,8 @@ body { font-size: 16px; }
 }
 
 /*** payee panel ***/
-.payees-lte4 p, .payees-gt4 p { margin-bottom: 0; }
-.payees-lte4 p { display: inline; }
+.payees-lte4 p, .payees-gt4 p { margin-bottom: 0.1rem; }
+.payee-row { margin-top: 0.1rem; }
 
 .payee-checkbox {
   -webkit-filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
@@ -279,6 +298,60 @@ body { font-size: 16px; }
 .payee-element-gt4 { margin: 0 0.4rem; }
 .empty-payee-space-lt10 { width: 35.41px }
 .empty-payee-space-gt10 { width: 44.03px }
+
+/*** uneven console ***/
+.uneven-console {
+  display: flex;
+  justify-content: center;
+}
+
+.uneven-transition {
+  -webkit-animation: fadeIn 1s;
+          animation: fadeIn 1s;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+
+.uneven-console > div {
+  width: 500px;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+  border: 1px solid #dfe1e5;
+  border-radius: 0.5rem;
+  color: black;
+}
+
+.uneven-console-title {
+  display: flex;
+  justify-content: center;
+}
+
+.uneven-console-title > p {
+  position: relative;
+  top: -0.975rem;
+  width: min-content;
+  white-space: nowrap;
+  padding: 0 0.5rem;
+  font-size: 0.98rem;
+  background-color: white;
+}
+
+.uneven-nameboxes {
+  position: relative;
+  top: -1rem;
+}
+
+.uneven-totals > div {
+  border: 1px solid black;
+}
 
 /*** calculation section ***/
 .expenses-entered-section, .payment-amount-section { padding: 0 2rem; }
@@ -302,15 +375,29 @@ body { font-size: 16px; }
   margin: 0.55rem 0 0.8rem 0;
 }
 
-.delete-button {
+.delete-button, .expand-button {
   border-color: #767676 #212121 #212121 #767676;
-  padding: 1px;
-  margin-left: 0.35rem;
-  margin-top: 0.1rem;
   border-radius: 0.1rem;
 }
 
-.delete-button:hover { background: #dcdcdc; }
+.delete-button {
+  padding: 1px;
+  margin-left: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.expand-button {
+  height: 22px;
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1px 3px 1px;
+  margin-left: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.delete-button:hover, .expand-button:hover { background: #dcdcdc; }
 
 .delete-button img {
   display: block;
@@ -324,6 +411,7 @@ body { font-size: 16px; }
 
 @media only screen and (max-width: 991px) {
   .expense-form { margin-bottom: 1.25rem; }
+  .uneven-console > div { width: 400px; }
   .expenses-entered-section { margin-bottom: 1.2rem; }
   .expenses-entered-section, .payment-amount-section { padding: 0 0.75rem; }
 }

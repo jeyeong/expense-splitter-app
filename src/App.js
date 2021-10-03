@@ -1,42 +1,10 @@
 import React, { useState } from 'react'
 import './App.css'
+import WebsiteHeader from './components/Header'
 import NumPeopleSection from './components/NumPeopleSection'
 import NameSection from './components/NameSection'
 import ExpenseSection from './components/ExpenseSection'
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import logo from './images/placeholder.svg'
-
-const WebsiteHeader = () => {
-  return (
-    <div className="website-header">
-      <Container>
-        <Row className="text-center brand">
-          <h1>
-            <a href="#">
-              <img
-                src={logo}
-                alt="logo"
-                className="logo"
-              />
-            </a>
-            The Expense Splitter
-          </h1>
-        </Row>
-        <Row className="tools">
-          <Col className="tool-1">
-            <a href="#">Quicksplit</a>
-          </Col>
-          <Col className="tool-2">
-            <a href="#">Full Splitter</a>
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  )
-}
 
 const App = () => {
   // Section toggler
@@ -58,7 +26,7 @@ const App = () => {
       <WebsiteHeader />
       <div className="text-center container main">
         <h1 className="header">Quicksplit</h1>
-        <NumPeopleSection
+        <NumPeopleSection.NumPeopleSection
           show={showSection[0]}
           numOfPeople={numOfPeople}
           setNumOfPeople={setNumOfPeople}
