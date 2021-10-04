@@ -15,7 +15,7 @@ const AmountBox = ({ amount, setAmount }) => {
 
   return (
     <div className="amount-box">
-      <label htmlFor="amount">$ </label>
+      <label htmlFor="amount">$</label>
       <input value={amount} id="amount" onChange={handleAmountEntry} />
     </div>
   )
@@ -190,7 +190,7 @@ const ExpenseListItem = ({ expense, deleteExpense }) => {
     }
 
     return (
-      `${expense.payer} paid $${expense.amount}` +
+      `${expense.payer} paid $${expense.amount.toFixed(2)}` +
       `${expense.description !== '' ? ` for ${expense.description}` : ``}` +
       `: ${formatPayeeNames()}`
     ) 
@@ -342,24 +342,27 @@ const ExpenseSection = ({ show, names }) => {
   const setErrorMsgWithTimer = (message, time) => {
     setErrorMessage(message)
     setTimeout(() => setErrorMessage(''), time)
-  } 
+  }
+
+  const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
 
   // Calculate the individual amounts owed for even splitting
-  const calculateEvenSplit = () => {
+  const calculateEvenSplit = roundedAmount => {
     const numOfPayees = payees.reduce((s, p) => s + p, 0)
     const indivAmounts = {}
     names.forEach((n, i) => {
-      if (payees[i]) indivAmounts[n] = amount / numOfPayees
+      if (payees[i]) indivAmounts[n] = roundedAmount / numOfPayees
       else indivAmounts[n] = 0
     })
     return indivAmounts
   }
 
   // Set the individual amounts owed for uneven splitting
-  const handleUnevenSplit = (roundedTarget) => {
+  const handleUnevenSplit = roundedTarget => {
     // Compute the sum of individual amounts
     const total = unevenSplitAmounts.reduce((sum, amount, i) => {
-      if (payees[i]) return (sum + Number(amount))
+      if (amount === ".") return sum
+      if (payees[i]) return (sum + roundUpTo2DecimalPlaces(Number(amount)))
       return sum
     }, 0)
 
@@ -367,7 +370,7 @@ const ExpenseSection = ({ show, names }) => {
     if (total != roundedTarget) {
       setErrorMsgWithTimer(
         `Sum of individual amounts ($${total.toFixed(2)}) does not match ` +
-        `the expense total ($${roundedTarget.toFixed(2)}).`, 5000
+        `the expense total ($${roundedTarget.toFixed(2)}).`, 6000
       )
       return false
     }
@@ -375,7 +378,8 @@ const ExpenseSection = ({ show, names }) => {
     // Set the amount owed by each person
     const indivAmounts = {}
     names.forEach((n, i) => {
-      if (payees[i]) indivAmounts[n] = Number(unevenSplitAmounts[i])
+      if (payees[i])
+        indivAmounts[n] = roundUpTo2DecimalPlaces(Number(unevenSplitAmounts[i]))
       else indivAmounts[n] = 0
     })
     return indivAmounts
@@ -399,7 +403,7 @@ const ExpenseSection = ({ show, names }) => {
     }
 
     // Round up, to 2 decimal places
-    const roundedAmount = (Math.ceil(convertedAmount * 100) / 100).toFixed(2)
+    const roundedAmount = roundUpTo2DecimalPlaces(convertedAmount)
 
     const newExpense = {
       isUneven: doUneven,
@@ -414,9 +418,10 @@ const ExpenseSection = ({ show, names }) => {
     }
 
     // Calculate the amount owed by each person
-    if (!doUneven) newExpense['payeeAmounts'] = calculateEvenSplit()
+    if (!doUneven)
+      newExpense['payeeAmounts'] = calculateEvenSplit(roundedAmount)
     else {
-      const payeeAmounts = handleUnevenSplit(Number(roundedAmount))
+      const payeeAmounts = handleUnevenSplit(roundedAmount)
       if (payeeAmounts === false) return
       newExpense['payeeAmounts'] = payeeAmounts
     }

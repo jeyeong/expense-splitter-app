@@ -21,17 +21,28 @@ const UnevenNameboxes = ({ names, payees, setPayees,
   return (
     <div className="uneven-nameboxes">
       {names.map((n, i) => (
-        <div key={i}>
-          {n}&nbsp;
-          $
-          <input
-            value={unevenSplitAmounts[i]}
-            placeholder="0"
-            onChange={e => setPayeeAmount(e, i)}
-            disabled={!payees[i]}
-          />
+        <div
+          className={
+            payees[i]
+            ? "uneven-namebox"
+            : "uneven-namebox uneven-namebox-hidden"
+          }
+          key={i}
+        >
+          <div className="uneven-namebox-name">{n}</div>
+          <div className="uneven-namebox-amount">
+            <label htmlFor={`uneven-box-${i}`}>$</label>
+            <input
+              value={unevenSplitAmounts[i]}
+              placeholder="0"
+              id = {`uneven-box-${i}`}
+              onChange={e => setPayeeAmount(e, i)}
+              disabled={!payees[i]}
+            />
+          </div>
           <input
             type="checkbox"
+            className="uneven-namebox-checkbox"
             checked={payees[i]}
             onChange={() => changeCheckStatus(i)}
           />
@@ -42,16 +53,29 @@ const UnevenNameboxes = ({ names, payees, setPayees,
 }
 
 const TotalCalculations = ({ target, total }) => {
+  const left = target - total
+
   return (
     <div className="uneven-totals">
       <div>
-        Target {target.toFixed(2)}
+        <div className="uneven-totals-title">
+          <p>Target</p>
+        </div>
+        <p className="uneven-totals-figure">${target.toFixed(2)}</p>
       </div>
       <div>
-        Total {total.toFixed(2)}
+        <div className="uneven-totals-title">
+          <p>Total</p>
+        </div>
+        <p className="uneven-totals-figure">${total.toFixed(2)}</p>
       </div>
       <div>
-        Left {(target - total).toFixed(2)}
+        <div className="uneven-totals-title">
+          <p>Left</p>
+        </div>
+        <p className={left >= 0 ? "uneven-left-positive" : "uneven-left-negative"}>
+          ${(target - total).toFixed(2)}
+        </p>
       </div>
     </div>
   )
@@ -59,14 +83,14 @@ const TotalCalculations = ({ target, total }) => {
 
 const UnevenConsole = ({ names, amount, payees, setPayees,
                          unevenSplitAmounts, setUnevenSplitAmounts }) => {
+  const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
+
   // Round the target amount up, to 2 decimal places
   const [roundedAmount, setRoundedAmount] = useState(0)
 
   // Update the rounded amount whenever amount changes
   useEffect(() => {
-    setRoundedAmount(
-      Math.ceil(Number(amount) * 100) / 100
-    )
+    setRoundedAmount(roundUpTo2DecimalPlaces(Number(amount)))
   }, [amount])
 
   // Sum of imputed amounts
@@ -76,7 +100,8 @@ const UnevenConsole = ({ names, amount, payees, setPayees,
   useEffect(() => {
     setTotal(
       unevenSplitAmounts.reduce((sum, amount, i) => {
-        if (payees[i]) return (sum + Number(amount))
+        if (amount === ".") return sum
+        if (payees[i]) return (sum + roundUpTo2DecimalPlaces(Number(amount)))
         return sum
       }, 0)
     )
@@ -88,17 +113,19 @@ const UnevenConsole = ({ names, amount, payees, setPayees,
         <div className="uneven-console-title">
           <p>Uneven Splitter</p>
         </div>
-        <UnevenNameboxes
-          names={names}
-          payees={payees}
-          setPayees={setPayees}
-          unevenSplitAmounts={unevenSplitAmounts}
-          setUnevenSplitAmounts={setUnevenSplitAmounts}
-        />
-        <TotalCalculations
-          target={roundedAmount}
-          total={total}
-        />
+        <div className="uneven-console-content">
+          <UnevenNameboxes
+            names={names}
+            payees={payees}
+            setPayees={setPayees}
+            unevenSplitAmounts={unevenSplitAmounts}
+            setUnevenSplitAmounts={setUnevenSplitAmounts}
+          />
+          <TotalCalculations
+            target={roundedAmount}
+            total={total}
+          />
+        </div>
       </div>
     </div>
   )

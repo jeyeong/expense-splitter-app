@@ -321,12 +321,11 @@ body { font-size: 16px; }
 }
 
 .uneven-console > div {
-  width: 500px;
+  width: 425px;
   margin-top: 1rem;
   margin-bottom: 0.2rem;
   border: 1px solid #dfe1e5;
   border-radius: 0.5rem;
-  color: black;
 }
 
 .uneven-console-title {
@@ -344,14 +343,102 @@ body { font-size: 16px; }
   background-color: white;
 }
 
-.uneven-nameboxes {
+.uneven-console-content {
   position: relative;
-  top: -1rem;
+  top: -0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+/*** uneven nameboxes ***/
+.uneven-nameboxes {
+  margin-left: 5%;
+  width: 55%;
+}
+
+.uneven-namebox {
+  display: flex;
+  align-items: center;
+  margin: 0.35rem 0;
+}
+
+.uneven-namebox:first-of-type { margin-top: 0; }
+.uneven-namebox-hidden .uneven-namebox-name { opacity: 0.45 }
+.uneven-namebox-hidden .uneven-namebox-amount { opacity: 0.45 }
+
+.uneven-namebox-name {
+  width: 30%;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.uneven-namebox-amount {
+  flex-grow: 1;
+  border: 1px solid #1b1212;
+  border-radius: 1.5px;
+  margin: 0 2.5%;
+  padding: 1px 1px 1px 5px;
+  display: flex;
+  align-items: center;
+}
+
+.uneven-namebox-amount > label { cursor: text; }
+
+.uneven-namebox-amount > input {
+  height: 100%;
+  width: 90%;
+  border: none;
+  margin-left: 2px;
+}
+
+.uneven-namebox-amount > input:focus { outline: none; }
+
+.uneven-namebox-checkbox {
+  -webkit-filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
+          filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
+}
+
+/*** uneven totals ***/
+.uneven-totals {
+  margin-left: 10%;
+  width: 25%;
+  font-size: 0.9rem;
 }
 
 .uneven-totals > div {
-  border: 1px solid black;
+  border: 1px solid #dfe1e5;
+  border-radius: 0.25rem;
+  margin-bottom: 1.2rem;
 }
+
+.uneven-totals-title {
+  display: flex;
+  justify-content: center;
+}
+
+.uneven-totals-title > p {
+  position: relative;
+  top: -0.75rem;
+  width: min-content;
+  padding: 0 0.25rem;
+  background: white;
+  margin-bottom: 0;
+}
+
+.uneven-totals-figure, .uneven-left-positive, .uneven-left-negative {
+  position: relative;
+  top: -0.55rem;
+  margin-bottom: 0;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.uneven-left-positive, .uneven-left-negative { font-weight: 500; }
+.uneven-left-positive { color: blue; }
+.uneven-left-negative { color: red; }
 
 /*** calculation section ***/
 .expenses-entered-section, .payment-amount-section { padding: 0 2rem; }
