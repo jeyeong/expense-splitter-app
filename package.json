@@ -1,5 +1,6 @@
 {
-  "name": "quick_split",
+  "name": "quicksplit",
+  "homepage": "https://jeyeong.com/expense",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

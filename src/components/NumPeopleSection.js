@@ -15,7 +15,6 @@ const NumPeopleInputBox = ({ numOfPeople, setNumOfPeople }) => {
 
   return (
     <input
-      autoFocus
       value={numOfPeople === 0 ? "" : numOfPeople}
       placeholder="2"
       onChange={handleNumOfPeopleEntry}
@@ -51,28 +50,30 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
     }
   }
 
-  if (!show) {
-    return (
-      <div className="num-people-section">
-        <h3 style={{color: "lightgray"}}># of People</h3>
-      </div>
-    )
-  }
+  if (!show) return null
 
   return (
     <div className="num-people-section">
       <h3>How many people?</h3>
       <p>Enter a number from 2 to 20.</p>
-      <ErrorMessage
-        message={errorMessage}
-        nameOfClass="num-people-error"
-      />
-      <form>
+      <form class="num-people-form">
         <NumPeopleInputBox
           numOfPeople={numOfPeople}
           setNumOfPeople={setNumOfPeople}
         />
-        <button onClick={handleNext} type="submit">Next</button>
+        <br/>
+        <ErrorMessage
+          message={errorMessage}
+          nameOfClass="num-people-error"
+        />
+        <button
+          className="next-button"
+          onClick={handleNext}
+          type="submit"
+          autoFocus
+        >
+          ➞
+        </button>
       </form>
     </div>
   )

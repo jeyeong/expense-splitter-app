@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import NumPeopleSection from './NumPeopleSection'
+import ExpenseForm from './ExpenseForm'
+// import NumPeopleSection from './NumPeopleSection'
 import UnevenConsole from './UnevenConsole'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+// import Row from 'react-bootstrap/Row'
+// import Col from 'react-bootstrap/Col'
 import deleteImg from '../images/delete.svg'
 
 const AmountBox = ({ amount, setAmount }) => {
@@ -316,28 +317,19 @@ const AmountToPaySection = ({ names, expenses }) => {
 }
 
 const ExpenseSection = ({ show, names }) => {
-  const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [doUneven, setDoUneven] = useState(false)
-  const [payerIdx, setPayerIdx] = useState(0)
-  const [payees, setPayees] = useState([])
   const [unevenSplitAmounts, setUnevenSplitAmounts] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
   const [expenses, setExpenses] = useState([])
 
   // To update the payees and uneven split states after the initial render
-  if (payees.length !== names.length) {
-    setPayees(names.map(n => true))
-    setUnevenSplitAmounts(names.map(n => ''))
-  }
+  // if (payees.length !== names.length) {
+  //   setPayees(names.map(n => true))
+  //   setUnevenSplitAmounts(names.map(n => ''))
+  // }
 
-  if (!show) {
-    return (
-      <div className="expense-section">
-        <h3 style={{color: "lightgray"}}>Expenses</h3>
-      </div>
-    )
-  }
+  if (!show) return null
 
   const setErrorMsgWithTimer = (message, time) => {
     setErrorMessage(message)
@@ -347,98 +339,104 @@ const ExpenseSection = ({ show, names }) => {
   const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
 
   // Calculate the individual amounts owed for even splitting
-  const calculateEvenSplit = roundedAmount => {
-    const numOfPayees = payees.reduce((s, p) => s + p, 0)
-    const indivAmounts = {}
-    names.forEach((n, i) => {
-      if (payees[i]) indivAmounts[n] = roundedAmount / numOfPayees
-      else indivAmounts[n] = 0
-    })
-    return indivAmounts
-  }
+  // const calculateEvenSplit = roundedAmount => {
+  //   const numOfPayees = payees.reduce((s, p) => s + p, 0)
+  //   const indivAmounts = {}
+  //   names.forEach((n, i) => {
+  //     if (payees[i]) indivAmounts[n] = roundedAmount / numOfPayees
+  //     else indivAmounts[n] = 0
+  //   })
+  //   return indivAmounts
+  // }
 
   // Set the individual amounts owed for uneven splitting
-  const handleUnevenSplit = roundedTarget => {
-    // Compute the sum of individual amounts
-    const total = unevenSplitAmounts.reduce((sum, amount, i) => {
-      if (amount === ".") return sum
-      if (payees[i]) return (sum + roundUpTo2DecimalPlaces(Number(amount)))
-      return sum
-    }, 0)
+  // const handleUnevenSplit = roundedTarget => {
+  //   // Compute the sum of individual amounts
+  //   const total = unevenSplitAmounts.reduce((sum, amount, i) => {
+  //     if (amount === ".") return sum
+  //     if (payees[i]) return (sum + roundUpTo2DecimalPlaces(Number(amount)))
+  //     return sum
+  //   }, 0)
 
-    // Check if that sum matches the target total
-    if (total != roundedTarget) {
-      setErrorMsgWithTimer(
-        `Sum of individual amounts ($${total.toFixed(2)}) does not match ` +
-        `the expense total ($${roundedTarget.toFixed(2)}).`, 6000
-      )
-      return false
-    }
+  //   // Check if that sum matches the target total
+  //   if (total != roundedTarget) {
+  //     setErrorMsgWithTimer(
+  //       `Sum of individual amounts ($${total.toFixed(2)}) does not match ` +
+  //       `the expense total ($${roundedTarget.toFixed(2)}).`, 6000
+  //     )
+  //     return false
+  //   }
 
-    // Set the amount owed by each person
-    const indivAmounts = {}
-    names.forEach((n, i) => {
-      if (payees[i])
-        indivAmounts[n] = roundUpTo2DecimalPlaces(Number(unevenSplitAmounts[i]))
-      else indivAmounts[n] = 0
-    })
-    return indivAmounts
-  }
+  //   // Set the amount owed by each person
+  //   const indivAmounts = {}
+  //   names.forEach((n, i) => {
+  //     if (payees[i])
+  //       indivAmounts[n] = roundUpTo2DecimalPlaces(Number(unevenSplitAmounts[i]))
+  //     else indivAmounts[n] = 0
+  //   })
+  //   return indivAmounts
+  // }
 
-  const addExpense = e => {
-    e.preventDefault()
+  // const addExpense = e => {
+  //   e.preventDefault()
 
-    const convertedAmount = Number(amount)
+  //   const convertedAmount = Number(amount)
 
-    // Check amount entered
-    if (convertedAmount <= 0 || isNaN(convertedAmount)) {
-      setErrorMsgWithTimer("Please enter a valid amount.", 4000)
-      return
-    }
+  //   // Check amount entered
+  //   if (convertedAmount <= 0 || isNaN(convertedAmount)) {
+  //     setErrorMsgWithTimer("Please enter a valid amount.", 4000)
+  //     return
+  //   }
 
-    // Check that at least one payee is selected
-    if (payees.find(p => p) === undefined) {
-      setErrorMsgWithTimer("Please select at least one payee.", 5000)
-      return
-    }
+  //   // Check that at least one payee is selected
+  //   if (payees.find(p => p) === undefined) {
+  //     setErrorMsgWithTimer("Please select at least one payee.", 5000)
+  //     return
+  //   }
 
-    // Round up, to 2 decimal places
-    const roundedAmount = roundUpTo2DecimalPlaces(convertedAmount)
+  //   // Round up, to 2 decimal places
+  //   const roundedAmount = roundUpTo2DecimalPlaces(convertedAmount)
 
-    const newExpense = {
-      isUneven: doUneven,
-      amount: roundedAmount,
-      description: description,
-      payer: names[payerIdx],
-      payeeNames: names.filter((n, i) => (
-        payees[i] &&
-        // Nonzero amount if we are doing uneven splitting
-        ((!doUneven) || Number(unevenSplitAmounts[i]) > 0)
-      )),
-    }
+  //   const newExpense = {
+  //     isUneven: doUneven,
+  //     amount: roundedAmount,
+  //     description: description,
+  //     payer: names[payerIdx],
+  //     payeeNames: names.filter((n, i) => (
+  //       payees[i] &&
+  //       // Nonzero amount if we are doing uneven splitting
+  //       ((!doUneven) || Number(unevenSplitAmounts[i]) > 0)
+  //     )),
+  //   }
 
-    // Calculate the amount owed by each person
-    if (!doUneven)
-      newExpense['payeeAmounts'] = calculateEvenSplit(roundedAmount)
-    else {
-      const payeeAmounts = handleUnevenSplit(roundedAmount)
-      if (payeeAmounts === false) return
-      newExpense['payeeAmounts'] = payeeAmounts
-    }
+  //   // Calculate the amount owed by each person
+  //   if (!doUneven)
+  //     newExpense['payeeAmounts'] = calculateEvenSplit(roundedAmount)
+  //   else {
+  //     const payeeAmounts = handleUnevenSplit(roundedAmount)
+  //     if (payeeAmounts === false) return
+  //     newExpense['payeeAmounts'] = payeeAmounts
+  //   }
 
-    // Add the expense to the list of expenses
-    setExpenses(expenses.concat(newExpense))
+  //   // Add the expense to the list of expenses
+  //   setExpenses(expenses.concat(newExpense))
 
-    // Reset all fields
-    setAmount('')
-    setDescription('')
-    setUnevenSplitAmounts(unevenSplitAmounts.map(e => ''))
-  }
+  //   // Reset all fields
+  //   setAmount('')
+  //   setDescription('')
+  //   setUnevenSplitAmounts(unevenSplitAmounts.map(e => ''))
+  // }
 
   return (
     <div className="expense-section">
-      <h3>Enter your expenses:</h3>
-      <form className="expense-form">
+      <h3>Enter your expense</h3>
+      <ExpenseForm
+        names={names}
+        expenses={expenses}
+        setExpenses={setExpenses}
+      />
+      <br/>
+      {/* <form className="expense-form">
         <AmountBox
           amount={amount}
           setAmount={setAmount}
@@ -484,7 +482,7 @@ const ExpenseSection = ({ show, names }) => {
             expenses={expenses}
           />
         </Col>
-      </Row>
+      </Row> */}
     </div>
   )
 }

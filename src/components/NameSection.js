@@ -6,7 +6,7 @@ const NameBox = ({ name, defaultName, i, names, setNames, inputClass }) => {
 
   const handleNameEntry = e => {
     const newNames = [...names]
-    if (e.target.value === '') newNames[i] = `🧍${i + 1}`
+    if (e.target.value === '') newNames[i] = `🙂${i + 1}`
     else newNames[i] = e.target.value
     setNames(newNames)
   }
@@ -46,7 +46,7 @@ const NameBoxes = ({ numOfPeople, names, setNames }) => {
             {group.map((name, j) => (
               <NameBox
                 name={name}
-                defaultName={`🧍${i*3 + j + 1}`}
+                defaultName={`🙂${i*3 + j + 1}`}
                 i={i*3 + j}
                 names={names}
                 setNames={setNames}
@@ -65,7 +65,7 @@ const NameBoxes = ({ numOfPeople, names, setNames }) => {
       {namesToShow.map((name, i) => (
         <NameBox
           name={name}
-          defaultName={`🧍${i + 1}`}
+          defaultName={`🙂${i + 1}`}
           i={i}
           names={names}
           setNames={setNames}
@@ -87,25 +87,21 @@ const NameSection = ({ show, numOfPeople, names, setNames,
     setShowSection([false, false, true])
   }
 
-  if (!show) {
-    return (
-      <div className="name-section">
-        <h3 style={{color: "lightgray"}}>Names</h3>
-      </div>
-    )
-  }
+  if (!show) return null
 
   return (
     <div className="name-section">
       <h3>What are your names?</h3>
-      <p>This is optional. (Hit 'next' to skip.)</p>
+      <p>This is optional. (Hit ➞ to skip.)</p>
       <form>
         <NameBoxes
           numOfPeople={numOfPeople}
           names={names}
           setNames={setNames}
         />
-        <button autoFocus onClick={handleNext} type="submit">Next</button>
+        <button className="next-button" onClick={handleNext} type="submit" autoFocus>
+          ➞
+        </button>
       </form>
     </div>
   )
