@@ -56,7 +56,7 @@ const NumPeopleSection = ({ show, numOfPeople, setNumOfPeople,
     <div className="num-people-section">
       <h3>How many people?</h3>
       <p>Enter a number from 2 to 20.</p>
-      <form class="num-people-form">
+      <form className="num-people-form">
         <NumPeopleInputBox
           numOfPeople={numOfPeople}
           setNumOfPeople={setNumOfPeople}
