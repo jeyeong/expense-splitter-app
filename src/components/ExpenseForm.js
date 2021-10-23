@@ -3,6 +3,9 @@ import NumPeopleSection from './NumPeopleSection'
 import UnevenComponents from './UnevenComponents'
 import MealComponents from './MealComponents'
 
+// Helper function for 2 dp upward rounding
+const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
+
 const AmountBox = ({ amount, setAmount, errorMessage }) => {
   const handleAmountEntry = e => {
     const numEntered = Number(e.target.value)
@@ -140,6 +143,17 @@ const UnevenContainer = ({ mode, amount, names, payees, unevenAmounts,
                            setUnevenAmounts }) => {
   if (mode === "even") return null
 
+  let target = isNaN(Number(amount)) ? 0 : Number(amount)
+  let total = unevenAmounts.reduce((total, amt, i) => {
+    if (payees[i]) {
+      if (isNaN(Number(amt))) return total
+      return total + Number(amt)
+    }
+    return total
+  }, 0)
+  target = roundUpTo2DecimalPlaces(target)
+  total = roundUpTo2DecimalPlaces(total)
+
   return (
     <div className="uneven-container">
       <UnevenComponents.UnevenAmounts
@@ -147,34 +161,83 @@ const UnevenContainer = ({ mode, amount, names, payees, unevenAmounts,
         payees={payees}
         unevenAmounts={unevenAmounts}
         setUnevenAmounts={setUnevenAmounts}
+        left={target - total}
       />
       <UnevenComponents.TabulationBoxes
-        targetAmount={amount}
-        payees={payees}
-        unevenAmounts={unevenAmounts}
+        target={target}
+        total={total}
       />
     </div>
   )
 }
 
-const FormLayout = ({ names, amount, mode, payerIdx, setPayerIdx, payees,
-                      setPayees, unevenAmounts, setUnevenAmounts,
-                      errorMessage }) => {
-  if (mode === "meals") {
-    return (
-      <div className="item-payer-section">
-        <MealComponents.MealItemBox
+const MealsLayout = ({ amount, names, payees, setPayees, dishNumber,
+                       setDishNumber, dishAmount, setDishAmount, mealAmounts,
+                       setMealAmounts, payerIdx, setPayerIdx }) => {
+  let target = isNaN(Number(amount)) ? 0 : Number(amount)
+  let total = mealAmounts.reduce((total, amt) => (total + amt), 0)
+  target = roundUpTo2DecimalPlaces(target)
+  total = roundUpTo2DecimalPlaces(total)
+
+  return (
+    <div className="meals-layout">
+      <MealComponents.DishSection
+        names={names}
+        dishNumber={dishNumber}
+        setDishNumber={setDishNumber}
+        dishAmount={dishAmount}
+        setDishAmount={setDishAmount}
+        payees={payees}
+        setPayees={setPayees}
+        mealAmounts={mealAmounts}
+        setMealAmounts={setMealAmounts}
+      />
+      <div className="meals-container">
+        <MealComponents.MealAmounts
           names={names}
-          payees={payees}
-          setPayees={setPayees}
+          mealAmounts={mealAmounts}
+          setMealAmounts={setMealAmounts}
+          left={target - total}
+          setDishNumber={setDishNumber}
+          setDishAmount={setDishAmount}
         />
-        <PayerSelection
-          names={names}
-          payerIdx={payerIdx}
-          setPayerIdx={setPayerIdx}
-          mode={mode}
+        <MealComponents.TabulationBoxes
+          target={target}
+          total={total}
+          mealAmounts={mealAmounts}
+          setMealAmounts={setMealAmounts}
         />
       </div>
+      <hr />
+      <MealComponents.PayerSelection
+        names={names}
+        payerIdx={payerIdx}
+        setPayerIdx={setPayerIdx}
+      />
+    </div>
+  )
+}
+
+const FormLayout = ({ names, amount, mode, payerIdx, setPayerIdx,
+                      payees, setPayees, unevenAmounts, setUnevenAmounts,
+                      dishNumber, setDishNumber, dishAmount, setDishAmount,
+                      mealAmounts, setMealAmounts, errorMessage }) => {
+  if (mode === "meals") {
+    return (
+      <MealsLayout
+        amount={amount}
+        names={names}
+        payees={payees}
+        setPayees={setPayees}
+        dishNumber={dishNumber}
+        setDishNumber={setDishNumber}
+        dishAmount={dishAmount}
+        setDishAmount={setDishAmount}
+        mealAmounts={mealAmounts}
+        setMealAmounts={setMealAmounts}
+        payerIdx={payerIdx}
+        setPayerIdx={setPayerIdx}
+      />
     )
   }
 
@@ -236,10 +299,16 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
   const [errorMessage, setErrorMessage] = useState('')
   const [submitSucceeded, setSubmitSucceeded] = useState(false)
 
+  // Meal mode states
+  const [dishNumber, setDishNumber] = useState(1)
+  const [dishAmount, setDishAmount] = useState('')
+  const [mealAmounts, setMealAmounts] = useState([])
+
   // To update certain states after the initial render
   if (payees.length !== names.length) {
     setPayees(names.map(n => true))
     setUnevenAmounts(names.map(n => ''))
+    setMealAmounts(names.map(n => 0))
   }
 
   /* Creating an expense item */
@@ -248,9 +317,6 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
     setErrorMessage(message)
     setTimeout(() => setErrorMessage(''), duration)
   }
-
-  // Helper function for 2 dp upward rounding
-  const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
 
   // Helper function for even splitting
   const splitEvenly = roundedAmount => {
@@ -277,13 +343,28 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
     return (roundUpTo2DecimalPlaces(target) === roundUpTo2DecimalPlaces(total))
   }
 
+  const validateMealSplit = () => {
+    let target = isNaN(Number(amount)) ? 0 : Number(amount)
+    let total = mealAmounts.reduce((total, amt) => (total + amt), 0)
+    return (roundUpTo2DecimalPlaces(target) === roundUpTo2DecimalPlaces(total))
+  }
+
   // Helper function for uneven splitting
   const splitUnevenly = () => {
     const indivAmounts = {}
     names.forEach((n, i) => {
-      if (payees[i]) indivAmounts[n] = Number(unevenAmounts[i])
+      if (payees[i] && !isNaN(Number(unevenAmounts[i]))) {
+        indivAmounts[n] = Number(unevenAmounts[i])
+      }
       else indivAmounts[n] = 0
     })
+    return indivAmounts
+  }
+
+  // Helper function for meal splitting
+  const splitMeals = () => {
+    const indivAmounts = {}
+    names.forEach((n, i) => { indivAmounts[n] = mealAmounts[i] })
     return indivAmounts
   }
 
@@ -311,21 +392,37 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
       return
     }
 
+    // Meal amount validation
+    if (mode === "meals" && !validateMealSplit()) {
+      errorMessageWithTimer(
+        "Please ensure the \"LEFT\" box reads 0. Use \"Split Tax/Tip\" to do this for you!",
+        7000
+      )
+      return
+    }
+
     // Create new expense object
     const newExpense = {
       isEven: mode === "even",
       amount: roundUpTo2DecimalPlaces(amountAsNumber),
       payer: names[payerIdx],
-      payeeNames: names.filter((n, i) => (
-        payees[i]
-      )),
+      payeeNames: null,
+      payeeAmounts: null,
     }
 
-    // Set "payeeAmounts" field
-    if (newExpense.isEven)
+    // Set "payeeNames" and "payeeAmounts" fields
+    if (mode === "even") {
+      newExpense.payeeNames = names.filter((n, i) => payees[i])
       newExpense.payeeAmounts = splitEvenly(newExpense.amount)
-    else
+    } else if (mode === "uneven") {
+      newExpense.payeeNames = names.filter((n, i) => (
+        payees[i] && Number(unevenAmounts[i]) !== 0 && !isNaN(Number(unevenAmounts[i]))
+      ))
       newExpense.payeeAmounts = splitUnevenly()
+    } else {
+      newExpense.payeeNames = names.filter((n, i) => mealAmounts[i] !== 0)
+      newExpense.payeeAmounts = splitMeals()
+    }
 
     // Add new expense to expenses list
     setExpenses(expenses.concat(newExpense))
@@ -333,6 +430,9 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
     // Reset expense form (certain fields)
     setAmount('')
     setUnevenAmounts(names.map(n => ''))
+    setDishNumber(1)
+    setDishAmount('')
+    setMealAmounts(names.map(n => 0))
     setErrorMessage('')
 
     // Indicate that the submit was successful
@@ -343,48 +443,52 @@ const ExpenseForm = ({ names, expenses, setExpenses }) => {
   /* Render */
   return (
     <div>
-      <form>
-        <div className="expense-form">
-          <div>
-            <AmountBox
-              amount={amount}
-              setAmount={setAmount}
-              errorMessage={errorMessage}
-            />
-            <ModeSelector
-              mode={mode}
-              setMode={setMode}
-            />
-            <FormLayout
-              names={names}
-              amount={amount}
-              mode={mode}
-              payerIdx={payerIdx}
-              setPayerIdx={setPayerIdx}
-              payees={payees}
-              setPayees={setPayees}
-              unevenAmounts={unevenAmounts}
-              setUnevenAmounts={setUnevenAmounts}
-              errorMessage={errorMessage}
-            />
-            <div className={submitSucceeded ? "look-below" : "hide-look-below"}>
-              ↓
-            </div>
+      <div className="expense-form">
+        <div>
+          <AmountBox
+            amount={amount}
+            setAmount={setAmount}
+            errorMessage={errorMessage}
+          />
+          <ModeSelector
+            mode={mode}
+            setMode={setMode}
+          />
+          <FormLayout
+            names={names}
+            amount={amount}
+            mode={mode}
+            payerIdx={payerIdx}
+            setPayerIdx={setPayerIdx}
+            payees={payees}
+            setPayees={setPayees}
+            unevenAmounts={unevenAmounts}
+            setUnevenAmounts={setUnevenAmounts}
+            dishNumber={dishNumber}
+            setDishNumber={setDishNumber}
+            dishAmount={dishAmount}
+            setDishAmount={setDishAmount}
+            mealAmounts={mealAmounts}
+            setMealAmounts={setMealAmounts}
+            errorMessage={errorMessage}
+          />
+          <div className={submitSucceeded ? "look-below" : "hide-look-below"}>
+            ↓
           </div>
         </div>
-        <div className="submission-container">
-          <div>
-            <NumPeopleSection.ErrorMessage
-              message={errorMessage}
-              nameOfClass="expense-form-error"
-            />
-            <SubmitButton
-              submitExpenseHandler={submitExpenseHandler}
-              succeedFlag={submitSucceeded}
-            />
-          </div>
+      </div>
+      <div className="submission-container">
+        <div>
+          <NumPeopleSection.ErrorMessage
+            message={errorMessage}
+            nameOfClass="expense-form-error"
+          />
+          <SubmitButton
+            submitExpenseHandler={submitExpenseHandler}
+            succeedFlag={submitSucceeded}
+          />
         </div>
-      </form>
+      </div>
     </div>
   )
 }

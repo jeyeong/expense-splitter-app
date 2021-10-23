@@ -1,6 +1,7 @@
 import React from 'react'
 
-const UnevenAmounts = ({ names, payees, unevenAmounts, setUnevenAmounts }) => {
+const UnevenAmounts = ({ names, payees, unevenAmounts, setUnevenAmounts,
+                         left }) => {
   const handleAmountEntry = (e, i) => {
     const numEntered = Number(e.target.value)
     if (isNaN(numEntered) && e.target.value !== '.') return
@@ -14,11 +15,15 @@ const UnevenAmounts = ({ names, payees, unevenAmounts, setUnevenAmounts }) => {
   }
 
   return (
-    <div className="uneven-amounts">
-      <div className="section-title">
-        <div>Amounts</div>
-      </div>
-      <div className="uneven-amounts-frame custom-scrollbar">
+    <div
+      className={
+        "uneven-amounts" +
+        (left === 0
+          ? ""
+          : left > 0 ? " uneven-amounts-positive" : " uneven-amounts-negative")
+      }
+    >
+      <div className="uneven-amounts-frame custom-scrollbar uneven-scrollbar">
         {names.map((n, i) => {
           if (payees[i]) return (
             <div
@@ -44,33 +49,18 @@ const UnevenAmounts = ({ names, payees, unevenAmounts, setUnevenAmounts }) => {
   )
 }
 
-const TabulationBoxes = ({ targetAmount, payees, unevenAmounts }) => {
-  const roundUpTo2DecimalPlaces = number => Math.ceil(number * 100) / 100
-
-  let convertedTarget = isNaN(Number(targetAmount)) ? 0 : Number(targetAmount)
-
-  let total = unevenAmounts.reduce((total, amt, i) => {
-    if (payees[i]) {
-      if (isNaN(Number(amt))) return total
-      return total + Number(amt)
-    }
-    return total
-  }, 0)
-
-  convertedTarget = roundUpTo2DecimalPlaces(convertedTarget)
-  total = roundUpTo2DecimalPlaces(total)
-
-  const left = convertedTarget - total
+const TabulationBoxes = ({ target, total }) => {
+  const left = target - total
 
   return (
-    <div className="tabulation-boxes">
-      <div className="uneven-target-box">
+    <div className="uneven-tabulation-boxes tabulation-boxes">
+      <div className="tabulation-box">
         <span>TARGET</span>
         <div>
-          {`$${convertedTarget.toFixed(2)}`}
+          {`$${target.toFixed(2)}`}
         </div>
       </div>
-      <div className="uneven-total-box">
+      <div className="tabulation-box">
         <span>TOTAL</span>
         <div>
           {`$${total.toFixed(2)}`}
@@ -78,7 +68,7 @@ const TabulationBoxes = ({ targetAmount, payees, unevenAmounts }) => {
       </div>
       <div
         className={
-          "uneven-left-box" +
+          "tabulation-box left-box" +
           (left === 0
             ? ""
             : left > 0 ? " left-box-positive" : " left-box-negative")
@@ -86,7 +76,7 @@ const TabulationBoxes = ({ targetAmount, payees, unevenAmounts }) => {
       >
         <span>LEFT</span>
         <div>
-          {`$${(convertedTarget - total).toFixed(2)}`}
+          {`$${left.toFixed(2)}`}
         </div>
       </div>
     </div>

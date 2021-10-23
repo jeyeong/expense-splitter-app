@@ -3,6 +3,7 @@ body {
   font-size: 16px;
 }
 
+
 /* ---- Header ---- */
 
 .website-header {
@@ -49,6 +50,7 @@ body {
   margin-top: -0.25rem;
 }
 
+
 /* ---- Main ---- */
 
 .main {
@@ -59,6 +61,7 @@ body {
 .main h1 { font-size: 2.4rem; }
 .main h3 { font-size: 1.5rem; }
 .num-people-section , .name-section, .expense-section { margin-top: 2rem; }
+
 
 /* ---- Num People Section ---- */
 
@@ -85,7 +88,9 @@ body {
 .next-button:hover { background: #d54839; }
 .next-button:focus { outline: none; }
 
+
 /* ---- Transitions ---- */
+
 @-webkit-keyframes fadeIn {
   0% {opacity:0;}
   100% {opacity:1;}
@@ -96,7 +101,9 @@ body {
   100% {opacity:1;}
 }
 
+
 /* ---- Name Section ---- */
+
 .name-section {
   -webkit-animation: fadeIn 1.5s;
           animation: fadeIn 1.5s;
@@ -112,7 +119,9 @@ body {
   margin-right: min(0.6rem, 1.66%);
 }
 
+
 /* ---- Expense Section ---- */
+
 .expense-section {
   -webkit-animation: fadeIn 1.5s;
           animation: fadeIn 1.5s;
@@ -129,6 +138,7 @@ body {
 
 .expense-form > div {
   width: 500px;
+  max-width: 93vw;
   height: -webkit-min-content;
   height: -moz-min-content;
   height: min-content;
@@ -274,15 +284,10 @@ body {
 }
 
 .payer-frame-uneven {
-  height: 4.5rem;
+  height: 4.75rem;
   top: -0.6rem;
   margin-bottom: 0.1rem;
 }
-
-.payer-frame::-webkit-scrollbar { width: 0.5rem; }
-.payer-frame::-webkit-scrollbar-track { background: #f1f1f1; }
-.payer-frame::-webkit-scrollbar-thumb { background-color: #888; }
-.payer-frame::-webkit-scrollbar-thumb:hover { background: #6b6b6b; }
 
 .payer-item {
   display: -webkit-box;
@@ -339,7 +344,7 @@ body {
 }
 
 .payee-frame-uneven {
-  height: calc(4.5rem + 0.3rem);
+  height: calc(4.75rem + 0.3rem);
   top: calc(-0.6rem - 0.425rem - 1px);
   margin-bottom: calc(0.1rem - 0.3rem);
 }
@@ -472,12 +477,20 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar { width: 0.5rem; }
 .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-
-.payee-frame::-webkit-scrollbar-track,
-.meal-item-payee-frame::-webkit-scrollbar-track { margin-top: 0.45rem; }
-
+.payee-frame::-webkit-scrollbar-track { margin-top: 0.45rem; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #888; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6b6b6b; }
+
+.custom-scrollbar-horizontal::-webkit-scrollbar { height: 0.25rem; }
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  margin: 0 0.2rem;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb { background-color: #888; }
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover { background: #6b6b6b; }
+
 
 /* --- Uneven Splitting --- */
 
@@ -485,23 +498,34 @@ body {
   height: min-content;
   display: flex;
   padding: 0 7.5%;
-  margin-top: -1%;
+  margin-top: -1.5%;
   margin-bottom: 6%;
   animation: fadeIn 0.5s;
 }
 
 .uneven-amounts {
-  border: 1px solid #b2b4b7;
+  border: 1px solid #daf2e7;
+  background: #daf2e7;
   border-radius: 0.3rem;
   height: 7.75rem;
   width: 60%;
   padding: 0 3%;
   padding-bottom: 0.25rem;
+  transition: 0.25s;
+}
+
+.uneven-amounts-positive {
+  border-color: #e1f0fa;
+  background: #e1f0fa;
+}
+
+.uneven-amounts-negative {
+  border-color: #fadbd8;
+  background: #fadbd8;
 }
 
 .uneven-amounts-frame {
-  position: relative;
-  top: -0.5rem;
+  margin-top: 0.9rem;
   height: 80%;
   overflow-y: auto;
   text-align: left;
@@ -549,10 +573,10 @@ body {
   -webkit-appearance: none;
 }
 
-.uneven-amount-form > input::placeholder { opacity: 0.75; }
+.uneven-amount-form > input::placeholder { opacity: 0.8; }
 .uneven-amount-form > input:focus { outline: none; }
 
-.tabulation-boxes {
+.uneven-tabulation-boxes {
   width: 33%;
   height: 7.75rem;
   margin-left: 7%;
@@ -561,7 +585,7 @@ body {
   justify-content: space-between;
 }
 
-.uneven-total-box, .uneven-target-box, .uneven-left-box {
+.tabulation-box {
   border: 1px solid #b2b4b7;
   border-radius: 0.3rem;
   height: 27.5%;
@@ -572,7 +596,7 @@ body {
   justify-content: center;
 }
 
-.tabulation-boxes > div > span {
+.tabulation-box > span {
   position: absolute;
   left: 4%;
   top: -0.5rem;
@@ -581,7 +605,7 @@ body {
   background: white;
 }
 
-.tabulation-boxes > div > div {
+.tabulation-box > div {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -591,7 +615,7 @@ body {
   margin: 0 0.3rem;
 }
 
-.uneven-left-box {
+.left-box {
   border: 1.5px solid #07ab5f;
   color: #07ab5f;
   font-weight: 500;
@@ -608,485 +632,152 @@ body {
   color: red;
 }
 
+
 /* --- Meal Mode --- */
 
-/*** meal item box ***/
-.item-payer-section {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 0 7.5%;
-  margin-bottom: 6.5%;
-}
-
-.meal-item-section {
-  width: 63%;
-  height: 9rem;
-  border: 1px solid #b2b4b7;
-  border-radius: 0.3rem;
-  margin-right: 7%;
+.meals-layout {
+  margin-bottom: 1.5rem;
   animation: fadeIn 0.5s;
 }
 
-.meal-item-title > div { border-radius: 0.25rem; }
-
-.meal-item-content {
-  position: relative;
-  top: -0.35rem;
+/*** dish form section ***/
+.dish-section {
+  margin: 0 7.5%;
+  border: 1px solid #b2b4b7;
+  border-radius: 0.3rem;
+  height: min-content;
+  margin-top: -0.1rem;
+  margin-bottom: 1.5rem;
 }
 
-.meal-item-amount-box {
-  height: 2rem;
-  border: 1px solid black;
-  display: flex;
-  margin: 0 15%;
-}
-
-.meal-item-amount-box > label {
-  
-}
-
-.meal-item-amount-box > input {
+.dish-section-title {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.meal-item-payee-frame {
-  height: 4.7rem;
-  margin: 0.3rem 6%;
-  border-radius: 0.25rem;
-  overflow-y: auto;
-  text-align: left;
+.dish-section-title > span {
+  position: relative;
+  top: -0.7rem;
+  font-size: 0.8rem;
+  padding: 0 0.2rem;
+  background: white;
 }
 
-.meal-item-payee-container {
-  display: inline-block;
-  border: 1px solid transparent;
-  width: 30%;
-  margin: 0.425rem 1.66%;
+.dish-form-amount {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.05rem;
+  margin-bottom: 1rem;
 }
 
-.meal-item-payee-enabled, .meal-item-payee-disabled {
+.dish-form-amount > input {
+  width: 70%;
+  max-width: 10rem;
+  border: 1px solid #767676;
+  border-radius: 0.1rem;
+  padding: 0 0.25rem;
+}
+
+.dish-form-amount > input::placeholder { opacity: 0.8; }
+.dish-form-amount > input:focus { outline: none; }
+
+.dish-form-amount > button {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #767676 #212121 #212121 #767676;
+  background: #ffffff;
+  padding: 1px 6px;
+  transition: 0.15s;
+}
+
+.dish-form-amount > button:active {
+  border-color: #212121 #767676 #767676 #212121;
+}
+
+.dish-form-payees {
+  margin: 0 5%;
+  margin-bottom: 0.9rem;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.dish-form-payees > button {
+  width: 4rem;
+  margin: 0 3px;
+  margin-bottom: 0.2rem;
+  padding: 1px 2px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dish-payee-activated, .dish-payee-deactivated {
   border: none;
   border-radius: 0.2rem;
-  padding: 2.5px 2px;
-  width: 100%;
 }
 
-.meal-item-payee-enabled {
+.dish-payee-activated {
   background: linear-gradient(to bottom right, #f1948a, #e74c3c);
   color: white;
 }
 
-.meal-item-payee-disabled {
-  background: none;
-}
+.dish-payee-deactivated { background: white; }
 
-.meal-item-payee-enabled > p, .meal-item-payee-disabled > p {
-  margin-bottom: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
-}
-
-/*** payer selection ***/
-.item-payer-section .payer-selection {
-  width: 30%;
-  height: 9rem;
-}
-
-.item-payer-section .payer-frame { height: 7.1rem; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*** description box ***/
-.description-box {
-  display: -webkit-box;
-  display: -ms-flexbox;
+/*** meal amounts ***/
+.meals-container {
+  height: min-content;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin-bottom: 0.75rem;
+  padding: 0 7.5%;
+  margin-bottom: 5.5%;
 }
 
-.description-box input {
-  width: 208px;
-  padding-left: 4px;
-  margin-left: 5px;
+.meal-amounts { width: 60%; }
+
+.meal-amounts .uneven-amounts {
+  width: 100%;
+  margin-bottom: 0.4rem;
 }
 
-.description-box input::-webkit-input-placeholder { opacity: 0.8; }
-.description-box input::-moz-placeholder { opacity: 0.8; }
-.description-box input:-ms-input-placeholder { opacity: 0.8; }
-.description-box input::-ms-input-placeholder { opacity: 0.8; }
-.description-box input::placeholder { opacity: 0.8; }
+.meals-amount-form > label { cursor: default; }
 
-/*** expense form error message ***/
-/* .expense-form-error {
-  color: red;
-  margin: -0.25rem 0 0.65rem 0.25rem;
-} */
-
-/*** uneven splitting ***/
-/* .uneven-button, .uneven-button-enabled {
-  width: 30.656px;
-  border-color: #767676 #212121 #212121 #767676;
-  border-radius: 0 0.1rem 0.1rem 0;
-  -webkit-transition: background 0.15s, color 0.15s;
-  -o-transition: background 0.15s, color 0.15s;
-  transition: background 0.15s, color 0.15s;
-}
-
-.uneven-button { opacity: 0.85; }
-.uneven-button-enabled { opacity: 0.9; }
-
-.uneven-tooltip:hover .uneven-button, .uneven-button-enabled {
-  background: #e74c3c;
-  color: white;
-}
-
-.uneven-button-enabled:hover { background-color: #de4839; } */
-
-/*** uneven splitting - tooltip ***/
-.uneven-tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.uneven-tooltip .tooltiptext {
-  visibility: hidden;
-  width: 110px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  margin-top: 0.08rem;
-
-  /* position the tooltip text */
-  position: absolute;
-  z-index: 1;
-  top: -2.5px;
-  left: 125%;
-
-  /* fade in */
-  opacity: 0;
-  -webkit-transition: opacity 0.1s;
-  -o-transition: opacity 0.1s;
-  transition: opacity 0.1s;
-}
-
-/* tooltip arrow */
-.uneven-tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 35%;
-  left: -4%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent #555 transparent transparent;
-}
-
-/* show the tooltip text when you mouse over the tooltip container */
-.uneven-tooltip:hover .tooltiptext {
-  visibility: visible;
+.meals-amount-form > input:disabled {
+  color: black;
   opacity: 1;
 }
 
-/*** payer panel ***/
-.payer-panel {
-  margin-left: 15%;
-  margin-right: 15%;
-  margin-bottom: 0.6rem;
-}
-
-.payer-panel p { margin-bottom: 0.15rem; }
-
-.payer-panel button {
-  border: 3px solid transparent;
-  border-radius: 0.25rem;
-  padding: 0 4.5px 1px 4.5px;
+.meals-reset-button {
+  border: 1.5px solid black;
   background: none;
-  -webkit-transition-duration: 0.05s;
-       -o-transition-duration: 0.05s;
-          transition-duration: 0.05s;
+  color: black;
+  font-size: 0.85rem;
+  padding: 0 3px;
+  border-radius: 0.2rem;
 }
 
-.payer-panel button:hover {
-  border: 3px solid rgba(231, 76, 60, 0.25);
-  background: none;
-}
-
-.payer-panel button:disabled {
-  border-width: 3px;
-  border-color: rgba(231, 76, 60, 0.95) rgba(219, 68, 53, 0.95)
-    rgba(219, 68, 53, 0.95) rgba(231, 76, 60, 0.95);
-  color: inherit;
-}
-
-/*** payee panel ***/
-.payees-lte4 p, .payees-gt4 p { margin-bottom: 0.1rem; }
-.payee-row { margin-top: 0.1rem; }
-
-.payee-checkbox {
-  -webkit-filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
-          filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
-}
-
-.payee-element-lte4:first-of-type { margin-left: 0.1rem; }
-.payee-element-lte4, .payee-element-gt4 { display: inline-block; }
-.payee-element-lte4 { margin-right: 0.6rem; }
-.payee-element-gt4 { margin: 0 0.4rem; }
-.empty-payee-space-lt10 { width: 35.41px }
-.empty-payee-space-gt10 { width: 44.03px }
-
-/*** uneven console ***/
-/* .uneven-console {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-
-.uneven-transition {
-  -webkit-animation: fadeIn 1s;
-          animation: fadeIn 1s;
-}
-
-.uneven-console > div {
-  width: 425px;
-  margin-top: 1rem;
-  margin-bottom: 0.2rem;
-  border: 1px solid #dfe1e5;
-  border-radius: 0.5rem;
-}
-
-.uneven-console-title {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-
-.uneven-console-title > p {
-  position: relative;
-  top: -0.975rem;
-  width: -webkit-min-content;
-  width: -moz-min-content;
-  width: min-content;
-  white-space: nowrap;
-  padding: 0 0.5rem;
-  font-size: 0.98rem;
-  background-color: white;
-}
-
-.uneven-console-content {
-  position: relative;
-  top: -0.75rem;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-} */
-
-/*** uneven nameboxes ***/
-.uneven-nameboxes {
-  margin-left: 5%;
-  width: 55%;
-  margin-top: -0.3rem;
-  margin-bottom: 0.2rem;
-}
-
-.uneven-namebox {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin: 0.35rem 0;
-}
-
-.uneven-namebox:first-of-type { margin-top: 0; }
-.uneven-namebox-hidden .uneven-namebox-name { opacity: 0.45 }
-.uneven-namebox-hidden .uneven-namebox-amount { opacity: 0.45 }
-
-.uneven-namebox-name {
-  width: 30%;
-  text-align: left;
-  overflow: hidden;
-  white-space: nowrap;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
-}
-
-.uneven-namebox-amount {
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
-  border: 1px solid #1b1212;
-  border-radius: 1.5px;
-  margin: 0 2.5%;
-  padding: 1px 1px 1px 5px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.uneven-namebox-amount > label { cursor: text; }
-
-.uneven-namebox-amount > input {
-  height: 100%;
-  width: 90%;
-  border: none;
-  margin-left: 2px;
-}
-
-.uneven-namebox-amount > input:focus { outline: none; }
-
-.uneven-namebox-checkbox {
-  -webkit-filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
-          filter: grayscale(100%) sepia(100%) hue-rotate(318deg) saturate(2.8) brightness(1.1);
-}
-
-/*** uneven totals ***/
-.uneven-totals {
-  margin-left: 10%;
-  width: 25%;
+/*** meal tabulation boxes ***/
+.split-remaining {
+  background: linear-gradient(to right, #5352ed, #70a1ff);
+  color: white;
+  border-radius: 0.3rem;
+  height: 2rem;
   font-size: 0.9rem;
-}
-
-.uneven-totals > div {
-  border: 1px solid #dfe1e5;
-  border-radius: 0.25rem;
-  margin-bottom: 1.2rem;
-}
-
-.uneven-totals-title {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-
-.uneven-totals-title > p {
-  position: relative;
-  top: -0.75rem;
-  width: -webkit-min-content;
-  width: -moz-min-content;
-  width: min-content;
-  padding: 0 0.25rem;
-  background: white;
-  margin-bottom: 0;
-}
-
-.uneven-totals-figure, .uneven-left-positive, .uneven-left-negative {
-  position: relative;
-  top: -0.55rem;
-  margin-bottom: 0;
   padding: 0 0.5rem;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
-}
-
-.uneven-left-positive, .uneven-left-negative { font-weight: 500; }
-
-.uneven-left-positive { color: blue; }
-.uneven-left-negative { color: red; }
-.uneven-totals > div:last-of-type { margin-bottom: 0.8rem; }
-
-/*** calculation section ***/
-.expenses-entered-section, .payment-amount-section { padding: 0 2rem; border: 1px solid black; }
-
-.expenses-entered-section > div,
-.payment-amount-section > div {
-  border: 1px solid black;
-  padding: 0 1rem;
-}
-
-.expense-item {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin: 0.55rem 0 0.8rem 0;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
-.delete-button, .expand-button {
-  border-color: #767676 #212121 #212121 #767676;
-  border-radius: 0.1rem;
-}
+.split-remaining:hover { cursor: pointer; }
 
-.delete-button {
-  padding: 1px;
-  margin-left: 0.35rem;
-  margin-top: 0.1rem;
-}
+/*** dish payer selection ***/
+.dish-payer-selection > p { margin-bottom: 0.75rem; }
 
-/* .expand-button {
-  height: 22px;
-  width: 22px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  padding: 0 1px 3px 1px;
-  margin-left: 0.35rem;
-  margin-top: 0.1rem;
-} */
-
-.delete-button:hover, .expand-button:hover { background: #dcdcdc; }
-
-.delete-button img {
-  display: block;
-  width: 1rem;
-}
-
-.payment-item { margin: 0.55rem 0 0.6rem 0; }
-.filler { margin-bottom: 16px; }
 
 /* ---- Queries ---- */
 
 @media only screen and (max-width: 767px) {
-  .payer-frame-uneven { height: 4.25rem; }
-  .payee-frame-uneven { height: calc(4.25rem + 0.3rem); }
-
   .payee-item-container {
     width: 45%;
     margin: 0.425rem 2.5%;
@@ -1096,12 +787,27 @@ body {
 }
 
 @media only screen and (max-width: 575px) {
-  .section-title > div { font-size: 0.95rem; }
-  .uneven-container { margin-top: 8.5%; }
-  /* .uneven-amounts { height: 6.75rem; } */
-  /* .uneven-amounts-frame { top: -0.6rem; } */
+  .section-title > div {
+    top: -0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .payer-payee-section { padding-top: 0.15rem; }
+  .submission-container > div { width: 75vw; }
+  .uneven-container { margin-top: 1.35rem; }
+
+  .uneven-amounts-frame {
+    margin-top: 0.675rem;
+    height: 87.5%;
+  }
+
   .uneven-amount-name { width: 40%; }
   .uneven-amount-form { width: 60%; }
-  /* .tabulation-boxes { height: 6.75rem; } */
-  .tabulation-boxes > div > div { font-size: 0.9rem; }
+  .uneven-tabulation-boxes > div > div { font-size: 0.9rem; }
+
+  .split-remaining {
+    height: 2.1rem;
+    font-size: 0.85rem;
+    line-height: 1rem;
+  }
 }
