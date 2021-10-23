@@ -5,7 +5,7 @@ const WebsiteHeader = () => {
   return (
     <div className="website-header">
       <div className="brand">
-        <a href="#">
+        <a href="./">
           <h1>
             <img
               src={logo}

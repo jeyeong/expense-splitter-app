@@ -34,9 +34,7 @@ const ExpenseList = ({ expenses, setExpenses }) => {
       <div className="expense-list">
         <div>
           <div className="expense-list-placeholder">
-            <p>
-              Nothing to show!
-            </p>
+            <p>Nothing to show!</p>
           </div>
         </div>
       </div>

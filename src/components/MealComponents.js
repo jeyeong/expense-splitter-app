@@ -155,7 +155,13 @@ const TabulationBoxes = ({ target, total, mealAmounts, setMealAmounts }) => {
           {`$${left.toFixed(2)}`}
         </div>
       </div>
-      <div className="split-remaining" onClick={splitRemaining}>
+      <div
+        className={
+          "split-remaining" +
+          (left === 0 ? " split-remaining-disabled" : "")
+        }
+        onClick={splitRemaining}
+      >
         Split Tax/Tip
       </div>
     </div>
