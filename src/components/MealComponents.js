@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const DishSection = ({ names, dishNumber, setDishNumber, dishAmount,
                        setDishAmount, payees, setPayees, mealAmounts,
                        setMealAmounts }) => {
+  const [submissionStatus, setSubmissionStatus] = useState('')
+
   const handleAmountEntry = e => {
     const numEntered = Number(e.target.value)
     if (isNaN(numEntered) && e.target.value !== '.') return
@@ -15,10 +17,18 @@ const DishSection = ({ names, dishNumber, setDishNumber, dishAmount,
     
     // Validate amount
     const amountAsNumber = Number(dishAmount)
-    if (amountAsNumber <= 0 || isNaN(amountAsNumber)) return
+    if (amountAsNumber <= 0 || isNaN(amountAsNumber)) {
+      setSubmissionStatus('amountError')
+      setTimeout(() => setSubmissionStatus(''), 3500)
+      return
+    }
 
     // Validate payees
-    if (payees.find(p => p) === undefined) return
+    if (payees.find(p => p) === undefined) {
+      setSubmissionStatus('payeeError')
+      setTimeout(() => setSubmissionStatus(''), 4000)
+      return
+    }
 
     // Update amounts by person
     const roundedAmount = Math.ceil(amountAsNumber * 100) / 100
@@ -47,7 +57,14 @@ const DishSection = ({ names, dishNumber, setDishNumber, dishAmount,
       </div>
       <div className="dish-section-form">
         <form>
-          <div className="dish-form-amount">
+          <div
+            className={
+              "dish-form-amount" +
+              (submissionStatus === "amountError"
+                ? " dish-form-amount-error"
+                : "")
+            }
+          >
             <input
               value={dishAmount}
               placeholder="0.00"
@@ -55,12 +72,19 @@ const DishSection = ({ names, dishNumber, setDishNumber, dishAmount,
             />
             <button type="submit" onClick={handleFormSubmit}>✓</button>
           </div>
-          <div className="dish-form-payees custom-scrollbar-horizontal">
+          <div
+            className={
+              "dish-form-payees custom-scrollbar-horizontal" +
+              (submissionStatus === "payeeError"
+                ? " dish-form-payees-error"
+                : "")
+            }
+          >
             {names.map((n, i) => (
               <button
-                key={i}
                 className={payees[i] ? "dish-payee-activated" : "dish-payee-deactivated"}
                 onClick={e => changePayeeStatus(e, i)}
+                key={i}
               >
                 {n}
               </button>
@@ -129,9 +153,14 @@ const TabulationBoxes = ({ target, total, mealAmounts, setMealAmounts }) => {
 
     // Normal case
     const proportions = mealAmounts.map(a => a / total)
-    setMealAmounts(
-      mealAmounts.map((a, i) => a + proportions[i] * left)
-    )
+    const newMealAmounts = mealAmounts.map((a, i) => a + proportions[i] * left)
+    
+    // Check for $0.01 leftover, which occurs in some cases
+    let newTotal = newMealAmounts.reduce((total, amt) => (total + amt), 0)
+    const newLeft = target - newTotal
+    if (newLeft !== 0) newMealAmounts[0] += newLeft
+
+    setMealAmounts(newMealAmounts)
   }
 
   return (

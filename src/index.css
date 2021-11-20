@@ -597,7 +597,7 @@ body {
   border-radius: 0.3rem;
   height: min-content;
   margin-top: -0.1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.55rem;
 }
 
 .dish-section-title {
@@ -632,13 +632,18 @@ body {
 .dish-form-amount > input::placeholder { opacity: 0.8; }
 .dish-form-amount > input:focus { outline: none; }
 
+.dish-form-amount-error > input {
+  border-color: red;
+  box-shadow: 0 0 0 0.5px red;
+}
+
 .dish-form-amount > button {
   border-width: 2px;
   border-style: solid;
   border-color: #767676 #212121 #212121 #767676;
   background: #ffffff;
   padding: 1px 6px;
-  transition: 0.15s;
+  transition: 0.4s;
 }
 
 .dish-form-amount > button:active {
@@ -650,6 +655,7 @@ body {
   margin-bottom: 0.9rem;
   white-space: nowrap;
   overflow-x: auto;
+  border-radius: 0.25rem;
 }
 
 .dish-form-payees > button {
@@ -660,6 +666,11 @@ body {
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.dish-form-payees-error {
+  border-color: red;
+  box-shadow: 0 0 0 0.75px red;
 }
 
 .dish-payee-activated, .dish-payee-deactivated {
@@ -686,7 +697,7 @@ body {
 
 .meal-amounts .uneven-amounts {
   width: 100%;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
 .meals-amount-form > label { cursor: default; }
@@ -697,9 +708,9 @@ body {
 }
 
 .meals-reset-button {
-  border: 1.5px solid black;
+  border: 1.5px solid #6b6c6e;
   background: none;
-  color: black;
+  color: #474849;
   font-size: 0.85rem;
   padding: 0 3px;
   border-radius: 0.2rem;
@@ -720,7 +731,7 @@ body {
 }
 
 .split-remaining:hover { cursor: pointer; }
-.split-remaining-disabled { background: #b2b4b7; }
+.split-remaining-disabled { background: #babcbe; }
 .split-remaining-disabled:hover { cursor: default; }
 
 /*** dish payer selection ***/
@@ -849,7 +860,7 @@ body {
   position: absolute;
   top: -23.5px;
   font-size: 0.95rem;
-  margin-right: 2px;
+  margin-right: 5px;
 }
 
 
@@ -879,8 +890,8 @@ body {
     height: 87.5%;
   }
 
-  .uneven-amount-name { width: 40%; }
-  .uneven-amount-form { width: 60%; }
+  .uneven-amount-name { width: 45%; }
+  .uneven-amount-form { width: 55%; }
   .uneven-tabulation-boxes > div > div { font-size: 0.9rem; }
 
   .split-remaining {
